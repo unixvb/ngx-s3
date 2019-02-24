@@ -3,9 +3,9 @@
 
   <p class="table__path">User:/{{router.url}}/</p>
   <div class="table__footer">
-    <button [routerLink]="['../']"
+    <button class="table__back"
             [disabled]="router.url === '/'"
-            class="table__back">
+            [routerLink]="['../']">
       Back
     </button>
 
@@ -29,8 +29,8 @@
     <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
       <ngx-datatable-column name="Name" [flexGrow]="1">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <a [routerLink]="[row.name]"
-             class="table__folder">
+          <a class="table__folder"
+             [routerLink]="[row.name]">
             {{ row.name }}
           </a>
         </ng-template>

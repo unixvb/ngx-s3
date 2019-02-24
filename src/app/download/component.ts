@@ -69,7 +69,7 @@ export class DownloadComponent implements OnInit, OnDestroy {
     this.loader$.next(true);
     this.downloadService.listFiles(folder)
       .then(response => {
-        this.directories = response.CommonPrefixes.map(data => new S3DirectoryModel(data));
+        this.directories = response.CommonPrefixes.map(data => new S3DirectoryModel(data)).filter(data => data.name);
         this.files = response.Contents.filter(data => data.Size).map(data => new S3ObjectModel(data, this.downloadService));
         this.loader$.next(false);
         this.changeDetector.detectChanges();
