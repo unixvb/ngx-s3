@@ -11,10 +11,9 @@ import { AuthService } from '../service';
   styleUrls: ['./component.scss']
 })
 export class SigninComponent implements OnInit {
-
   public formGroup: FormGroup;
-  submissionError: string;
-  submitted = false;
+  public submissionError: string;
+  public submitted = false;
 
   constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
   }

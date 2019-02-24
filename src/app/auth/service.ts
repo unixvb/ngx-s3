@@ -33,13 +33,13 @@ export class AuthService {
     });
   }
 
-  signUp(email: string, password: string, callback?: (err: Error, statusCode: string) => void) {
+  signUp(user: SignupData, callback?: (err: Error, statusCode: string) => void) {
     const authService = this;
 
     this.userPool.signUp(
-      email,
-      password,
-      [new CognitoUserAttribute({ Name: 'email', Value: email })],
+      user.username,
+      user.password,
+      [new CognitoUserAttribute({ Name: 'email', Value: user.username })],
       null,
       function (err, result) {
         authService.currentStatus$.next(AuthStatusCodeEnum.signedIn);

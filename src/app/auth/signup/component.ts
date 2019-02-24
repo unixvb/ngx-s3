@@ -1,9 +1,9 @@
 import { Component, OnInit, } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthStatusCodeEnum } from '../models/auth-status-code.enum';
 import { AuthService } from '../service';
-import { SignupForm } from '../types';
 
 @Component({
   selector: 'app-signup',
@@ -11,24 +11,30 @@ import { SignupForm } from '../types';
   styleUrls: ['./component.scss']
 })
 export class SignupComponent implements OnInit {
+  public formGroup: FormGroup;
+  public submissionError: string;
+  public submitted = false;
 
-  username: string;
-  password: string;
-  submissionError: string;
-  submitted = false;
-  formErrors: SignupForm = {};
-  statusMessage: string;
-  statusClass: string;
-
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
   }
 
-  signup($event) {
-    this.submitted = true;
-    // Disable default submission.
-    $event.preventDefault();
+  ngOnInit() {
+    this.formGroup = this.fb.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
 
-    this.authService.signUp(this.username, this.password,
+    this.authService.setPreviousAppParams(this.router.routerState.snapshot.root.queryParams);
+    this.authService.getCurrentUser((err, currentSignedInUser) => {
+      if (currentSignedInUser && currentSignedInUser.signedIn) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+  onFormSubmit() {
+    this.submitted = true;
+    this.authService.signUp(this.formGroup.value,
       (err, statusCode) => {
         this.submitted = false;
         if (err) {
@@ -44,14 +50,5 @@ export class SignupComponent implements OnInit {
           this.submissionError = err.message;
         }
       });
-  }
-
-  ngOnInit() {
-    this.authService.setPreviousAppParams(this.router.routerState.snapshot.root.queryParams);
-    this.authService.getCurrentUser((err, currentSignedInUser) => {
-      if (currentSignedInUser && currentSignedInUser.signedIn) {
-        this.router.navigate(['/']);
-      }
-    });
   }
 }
