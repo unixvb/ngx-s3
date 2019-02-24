@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -26,6 +26,7 @@ export class DownloadComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;
 
   constructor(public router: Router,
+              private route: ActivatedRoute,
               private authService: AuthService,
               private uploadService: UploadService,
               private downloadService: DownLoadService,
@@ -63,6 +64,17 @@ export class DownloadComponent implements OnInit, OnDestroy {
     }
 
     this.uploadService.createDirectory(this.router.url, this.formGroup.value.name).send(() => this.fetchData());
+  }
+
+  public onBackButtonClick() {
+    // TODO: fix bug with navigation ['../'] on root route (it breaks router)
+    if (this.router.url.split('/').length === 2) {
+      console.log('/');
+      this.router.navigate(['/']);
+    } else {
+      console.log('../');
+      this.router.navigate(['../'], { relativeTo: this.route });
+    }
   }
 
   private fetchData(folder: string = this.router.url) {

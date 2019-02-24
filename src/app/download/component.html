@@ -5,7 +5,7 @@
   <div class="table__footer">
     <button class="table__back"
             [disabled]="router.url === '/'"
-            [routerLink]="['../']">
+            (click)="onBackButtonClick()">
       Back
     </button>
 
