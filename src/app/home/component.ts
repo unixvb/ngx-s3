@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { URLUtil } from '../../utils';
+import { Component } from '@angular/core';
 
 /**
  * Container for security scans.
@@ -9,12 +8,5 @@ import { URLUtil } from '../../utils';
   templateUrl: './component.html',
   styleUrls: ['./component.scss']
 })
-export class HomeComponent implements OnInit {
-  baseUrl: string;
-
-  constructor() { }
-
-  ngOnInit() {
-    this.baseUrl = URLUtil.getBaseUrl();
-  }
+export class HomeComponent {
 }
