@@ -1,10 +1,8 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { AuthService } from '../service';
+import { Component, OnInit, } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { AuthStatusCodeEnum } from '../models/auth-status-code.enum';
+import { AuthService } from '../service';
 import { SignupForm } from '../types';
 
 @Component({
@@ -35,14 +33,14 @@ export class SignupComponent implements OnInit {
         this.submitted = false;
         if (err) {
           alert(err.message);
-        } else if (statusCode === AuthService.statusCodes.newPasswordRequired) {
+        } else if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
           this.router.navigate(['first-time-password']);
-        } else if (statusCode === AuthService.statusCodes.signedIn) {
-          this.authService.handleRedirect();
+        } else if (statusCode === AuthStatusCodeEnum.signedIn) {
+          this.router.navigate(['/']);
           return;
-        } else if (statusCode === AuthService.statusCodes.noSuchUser) {
+        } else if (statusCode === AuthStatusCodeEnum.noSuchUser) {
           this.submissionError = 'Email or password is not valid.';
-        } else if (statusCode === AuthService.statusCodes.unknownError) {
+        } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
         }
       });
@@ -52,7 +50,7 @@ export class SignupComponent implements OnInit {
     this.authService.setPreviousAppParams(this.router.routerState.snapshot.root.queryParams);
     this.authService.getCurrentUser((err, currentSignedInUser) => {
       if (currentSignedInUser && currentSignedInUser.signedIn) {
-        this.authService.handleRedirect();
+        this.router.navigate(['/']);
       }
     });
   }

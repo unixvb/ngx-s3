@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service';
 import { SignupForm } from '../../types';
+import { AuthStatusCodeEnum } from '../../models/auth-status-code.enum';
 
 @Component({
   selector: 'app-password',
@@ -24,11 +25,11 @@ export class ForgotPasswordComponent {
     this.authService.forgotPassword(this.username,
       (err, statusCode) => {
         this.submitted = false;
-        if (statusCode === AuthService.statusCodes.verificationCodeRequired) {
+        if (statusCode === AuthStatusCodeEnum.verificationCodeRequired) {
           this.router.navigate(['reset-password']);
-        } else if (statusCode === AuthService.statusCodes.noSuchUser) {
+        } else if (statusCode === AuthStatusCodeEnum.noSuchUser) {
           this.submissionError = 'Email is not valid.';
-        } else if (statusCode === AuthService.statusCodes.unknownError) {
+        } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
         }
       });

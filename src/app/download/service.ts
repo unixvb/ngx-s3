@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { User } from '../auth/types';
+import { User } from '../auth';
 import { S3Factory } from '../../utils';
 import { s3Config } from '../../config';
 import { DIVIDER, UploadService } from '../upload/service';
-import { from } from 'rxjs';
 
 @Injectable()
 export class DownLoadService {
@@ -21,11 +20,11 @@ export class DownLoadService {
   }
 
   listFiles(folder: string) {
-    return from(S3Factory.getS3(this.region).listObjectsV2({
+    return S3Factory.getS3(this.region).listObjectsV2({
       Bucket: s3Config.buckets[this.region],
       Prefix: [this.signedInUser.username, this.signedInUser.userId].join(DIVIDER) + UploadService.reativeFolder(folder),
       Delimiter: DIVIDER
-    }).promise());
+    }).promise();
   }
 
   getUrl(key: string) {

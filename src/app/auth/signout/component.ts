@@ -1,18 +1,13 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
+import { Component } from '@angular/core';
+
 import { AuthService } from '../service';
-import { Router } from '@angular/router';
 
 @Component({
   template: ``
 })
-export class SignoutComponent implements OnInit {
+export class SignoutComponent {
 
-  constructor(private authService: AuthService, private router: Router) { }
-
-  ngOnInit() {
+  constructor(private authService: AuthService) {
     this.authService.signout();
   }
 }

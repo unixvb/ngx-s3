@@ -5,22 +5,10 @@ import { AWSError, CognitoIdentityCredentials, config as AWSConfig } from 'aws-s
 
 import { cognitoConfig } from '../../config';
 import { SignupData, User } from './types';
-import { URLUtil } from '../../utils';
+import { AuthStatusCodeEnum, AuthStatusCodeType } from './models/auth-status-code.enum';
 
 @Injectable()
 export class AuthService {
-  public static statusCodes = {
-    success: 'success',
-    signedIn: 'signedIn',
-    signedOut: 'signedOut',
-    incompletedSigninData: 'incompletedSigninData',
-    newPasswordRequired: 'newPasswordRequired',
-    verificationCodeRequired: 'verificationCodeRequired',
-    passwordChanged: 'passwordChanged',
-    noSuchUser: 'noSuchUser',
-    unknownError: 'unknownError'
-  };
-
   private static userPoolLoginKey = `cognito-idp.${cognitoConfig.userPool.region}.amazonaws.com/${cognitoConfig.userPool.UserPoolId}`;
 
   private userPool = new CognitoUserPool(cognitoConfig.userPool);
@@ -52,19 +40,19 @@ export class AuthService {
       [new CognitoUserAttribute({ Name: 'email', Value: email })],
       null,
       function (err, result) {
-        authService.currentStatus = AuthService.statusCodes.signedIn;
+        authService.currentStatus = AuthStatusCodeEnum.signedIn;
         authService.signupData = {};
-        callback(err, AuthService.statusCodes.signedIn);
+        callback(err, AuthStatusCodeEnum.signedIn);
       });
   }
 
-  authenticate(user: SignupData, callback?: (err: Error, statusCode: string) => void) {
+  signIn(user: SignupData, callback?: (err: Error, statusCode: AuthStatusCodeType) => void) {
     const authService = this;
     const username = user.username || this.signupData.username;
     const password = user.password || this.signupData.password;
     if (!username || !password) {
       callback(new Error('AuthenticationDetails are incomplete.'),
-        AuthService.statusCodes.incompletedSigninData);
+        AuthStatusCodeEnum.uncompletedSignInData);
       return;
     } else {
       this.signupData.username = username;
@@ -75,25 +63,25 @@ export class AuthService {
     const auth = new AuthenticationDetails({ Username: username, Password: password });
     cognitoUser.authenticateUser(auth, {
       onSuccess: function (authResult) {
-        authService.currentStatus = AuthService.statusCodes.signedIn;
+        authService.currentStatus = AuthStatusCodeEnum.signedIn;
         authService.signupData = {};
-        callback(null, AuthService.statusCodes.signedIn);
+        callback(null, AuthStatusCodeEnum.signedIn);
       },
 
       onFailure: function (err) {
-        authService.currentStatus = AuthService.statusCodes.unknownError;
+        authService.currentStatus = AuthStatusCodeEnum.unknownError;
         if (err.code === 'UserNotFoundException' || err.code === 'NotAuthorizedException') {
-          callback(err, AuthService.statusCodes.noSuchUser);
+          callback(err, AuthStatusCodeEnum.noSuchUser);
         } else {
-          callback(err, AuthService.statusCodes.unknownError);
+          callback(err, AuthStatusCodeEnum.unknownError);
         }
       },
       newPasswordRequired: function (userAttributes, requiredAttributes) {
         if (!user.newPassword) {
           const newNoNewPasswordError = new Error('First time logged in but new password is not provided');
           if (callback) {
-            authService.currentStatus = AuthService.statusCodes.newPasswordRequired;
-            callback(newNoNewPasswordError, AuthService.statusCodes.newPasswordRequired);
+            authService.currentStatus = AuthStatusCodeEnum.newPasswordRequired;
+            callback(newNoNewPasswordError, AuthStatusCodeEnum.newPasswordRequired);
             return;
           } else {
             throw newNoNewPasswordError;
@@ -114,27 +102,27 @@ export class AuthService {
     const cognitoUser = this.getCognitoUser(username);
     cognitoUser.forgotPassword({
       onSuccess: function () {
-        authService.currentStatus = AuthService.statusCodes.verificationCodeRequired;
-        callback(null, AuthService.statusCodes.verificationCodeRequired);
+        authService.currentStatus = AuthStatusCodeEnum.verificationCodeRequired;
+        callback(null, AuthStatusCodeEnum.verificationCodeRequired);
       },
       onFailure: function (err) {
-        authService.currentStatus = AuthService.statusCodes.unknownError;
+        authService.currentStatus = AuthStatusCodeEnum.unknownError;
         if (err.name === 'UserNotFoundException') {
-          callback(err, AuthService.statusCodes.noSuchUser);
+          callback(err, AuthStatusCodeEnum.noSuchUser);
         } else {
-          callback(err, AuthService.statusCodes.unknownError);
+          callback(err, AuthStatusCodeEnum.unknownError);
         }
       },
       inputVerificationCode: function (data) {
-        authService.currentStatus = AuthService.statusCodes.verificationCodeRequired;
-        callback(null, AuthService.statusCodes.verificationCodeRequired);
+        authService.currentStatus = AuthStatusCodeEnum.verificationCodeRequired;
+        callback(null, AuthStatusCodeEnum.verificationCodeRequired);
       }
     });
   }
 
   confirmPassword(verficationCode: string, newPassword: string, callback: (error: Error, statusCode: string) => void) {
     if (!this.signupData.username) {
-      callback(new Error('Username is Empty.'), AuthService.statusCodes.incompletedSigninData);
+      callback(new Error('Username is Empty.'), AuthStatusCodeEnum.uncompletedSignInData);
       return;
     }
     const authService = this;
@@ -145,12 +133,12 @@ export class AuthService {
 
     cognitoUser.confirmPassword(verficationCode, newPassword, {
       onSuccess: () => {
-        authService.currentStatus = AuthService.statusCodes.passwordChanged;
-        callback(null, AuthService.statusCodes.success);
+        authService.currentStatus = AuthStatusCodeEnum.passwordChanged;
+        callback(null, AuthStatusCodeEnum.success);
       },
       onFailure: (err: Error) => {
-        authService.currentStatus = AuthService.statusCodes.unknownError;
-        callback(err, AuthService.statusCodes.unknownError);
+        authService.currentStatus = AuthStatusCodeEnum.unknownError;
+        callback(err, AuthStatusCodeEnum.unknownError);
       }
     });
   }
@@ -160,7 +148,7 @@ export class AuthService {
     if (currentUser) {
       this.userPool.getCurrentUser().signOut();
     }
-    this.router.navigate(['']);
+    this.router.navigate(['/signin']);
   }
 
   private getCurrentCognitoUser(callback: (err1?: Error, cognitoUser?: CognitoUser) => void) {
@@ -225,18 +213,5 @@ export class AuthService {
 
   setPreviousAppParams(params: any) {
     this.previousAppParams = params;
-  }
-
-  handleRedirect() {
-    if (this.previousAppParams && this.previousAppParams.from) {
-      let params = '';
-      if (this.previousAppParams.params) {
-        params = decodeURIComponent(this.previousAppParams.params).replace(/from=[^&]+&/g, '');
-      }
-
-      window.location.href = `${URLUtil.getBaseUrl()}/${this.previousAppParams.from}/?from=signin&${params}`;
-    } else {
-      this.router.navigate(['/']);
-    }
   }
 }

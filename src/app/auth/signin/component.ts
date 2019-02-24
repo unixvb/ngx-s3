@@ -1,11 +1,9 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { AuthService } from '../service';
+import { Component, OnInit, } from '@angular/core';
 import { Router } from '@angular/router';
-import { SignupForm } from '../types';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { AuthStatusCodeEnum } from '../models/auth-status-code.enum';
+import { AuthService } from '../service';
 
 @Component({
   selector: 'app-signin',
@@ -14,46 +12,42 @@ import { SignupForm } from '../types';
 })
 export class SigninComponent implements OnInit {
 
-  username: string;
-  password: string;
+  public formGroup: FormGroup;
   submissionError: string;
   submitted = false;
-  formErrors: SignupForm = {};
-  statusMessage: string;
-  statusClass: string;
 
-  constructor(private authService: AuthService, private router: Router) { }
-
-  signin($event) {
-    this.submitted = true;
-    // Disable default submission.
-    $event.preventDefault();
-
-    this.authService.authenticate({
-      username: this.username,
-      password: this.password
-    },
-      (err, statusCode) => {
-        this.submitted = false;
-        if (statusCode === AuthService.statusCodes.newPasswordRequired) {
-          this.router.navigate(['first-time-password']);
-        } else if (statusCode === AuthService.statusCodes.signedIn) {
-          this.authService.handleRedirect();
-          return;
-        } else if (statusCode === AuthService.statusCodes.noSuchUser) {
-          this.submissionError = 'Email or password is not valid.';
-        } else if (statusCode === AuthService.statusCodes.unknownError) {
-          this.submissionError = err.message;
-        }
-      });
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
   }
 
   ngOnInit() {
+    this.formGroup = this.fb.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+
     this.authService.setPreviousAppParams(this.router.routerState.snapshot.root.queryParams);
     this.authService.getCurrentUser((err, currentSignedInUser) => {
       if (currentSignedInUser && currentSignedInUser.signedIn) {
-        this.authService.handleRedirect();
+        this.router.navigate(['/']);
       }
     });
+  }
+
+  onFormSubmit() {
+    this.submitted = true;
+    this.authService.signIn(this.formGroup.value,
+      (err, statusCode) => {
+        this.submitted = false;
+        if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
+          this.router.navigate(['first-time-password']);
+        } else if (statusCode === AuthStatusCodeEnum.signedIn) {
+          this.router.navigate(['/']);
+          return;
+        } else if (statusCode === AuthStatusCodeEnum.noSuchUser) {
+          this.submissionError = 'Email or password is not valid.';
+        } else if (statusCode === AuthStatusCodeEnum.unknownError) {
+          this.submissionError = err.message;
+        }
+      });
   }
 }

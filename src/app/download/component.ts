@@ -1,20 +1,22 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
-import { DownLoadService } from './service';
-import { AuthService, User } from '../auth';
-import { S3ObjectModel } from '../models/s3-object.model';
-import { S3DirectoryModel } from '../models/s3-directory.model';
-import { filter } from 'rxjs/operators';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject } from 'rxjs';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UploadService } from '../upload';
+import { filter } from 'rxjs/operators';
+
 import { S3ObjectsRefreshService } from '../services/s3-objects-refresh.service';
+import { S3DirectoryModel } from '../models/s3-directory.model';
+import { S3ObjectModel } from '../models/s3-object.model';
+import { DownLoadService } from './service';
+import { AuthService, User } from '../auth';
+import { UploadService } from '../upload';
 
 @Component({
   selector: 'app-download',
   templateUrl: './component.html',
-  styleUrls: ['./component.scss']
+  styleUrls: ['./component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DownloadComponent implements OnInit, OnDestroy {
   public signedInUser: any;
@@ -28,7 +30,8 @@ export class DownloadComponent implements OnInit, OnDestroy {
               private uploadService: UploadService,
               private downloadService: DownLoadService,
               private formBuilder: FormBuilder,
-              private refreshService: S3ObjectsRefreshService) {
+              private refreshService: S3ObjectsRefreshService,
+              private changeDetector: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -64,18 +67,18 @@ export class DownloadComponent implements OnInit, OnDestroy {
 
   private fetchData(folder: string = this.router.url) {
     this.loader$.next(true);
-    this.downloadService.listFiles(folder).subscribe(
-      response => {
+    this.downloadService.listFiles(folder)
+      .then(response => {
         this.directories = response.CommonPrefixes.map(data => new S3DirectoryModel(data));
         this.files = response.Contents.filter(data => data.Size).map(data => new S3ObjectModel(data, this.downloadService));
         this.loader$.next(false);
-        console.log('sts');
-      },
-      error => {
+        this.changeDetector.detectChanges();
+      })
+      .catch(error => {
         console.log(error);
         this.loader$.next(false);
-      }
-    );
+        this.changeDetector.detectChanges();
+      });
   }
 
   ngOnDestroy(): void {

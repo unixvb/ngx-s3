@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { AuthService } from '../../service';
 import { SignupForm } from '../../types';
+import { AuthStatusCodeEnum } from '../../models/auth-status-code.enum';
 
 @Component({
   selector: 'app-password',
@@ -37,20 +39,20 @@ export class FirstTimePasswordComponent {
     }
     this.submitted = true;
     this.formErrors = {};
-    this.authService.authenticate({
+    this.authService.signIn({
       newPassword: this.newPassword
     },
       (err, statusCode) => {
         this.submitted = false;
-        if (statusCode === AuthService.statusCodes.signedIn) {
+        if (statusCode === AuthStatusCodeEnum.signedIn) {
           this.statusMessage = 'Password change is successful. You will be redirected to signin page within 5 seconds';
           this.statusClass = 'alert-success';
           setTimeout(() => { this.authService.signout(); }, 4000);
           return;
-        } else if (statusCode === AuthService.statusCodes.incompletedSigninData) {
+        } else if (statusCode === AuthStatusCodeEnum.uncompletedSignInData) {
           this.router.navigate(['']);
           return;
-        } else if (statusCode === AuthService.statusCodes.unknownError) {
+        } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
         }
       });
