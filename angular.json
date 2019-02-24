@@ -52,7 +52,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "file-storage:build"
+            "browserTarget": "file-storage:build",
+            "host": "ngx-s3.auth.us-east-1.amazoncognito.com",
+            "port": 8001
           },
           "configurations": {
             "production": {
