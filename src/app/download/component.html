@@ -1,0 +1,74 @@
+<div class="col">
+  <h2 class="section-title text-center">Uploaded Files</h2>
+
+  <p class="table__path">User:/{{router.url}}/</p>
+  <div class="table__footer">
+    <button [routerLink]="['../']"
+            [disabled]="router.url === '/'"
+            class="table__back">
+      Back
+    </button>
+
+    <form #ngForm="ngForm"
+          class="form"
+          novalidate
+          [formGroup]="formGroup"
+          (ngSubmit)="onFormSubmit()">
+
+      <input class="form__input"
+             [class.form__input--error]="ngForm.submitted && formGroup.controls.name.errors"
+             placeholder="Directory name"
+             formControlName="name"/>
+      <button class="form__button">
+        Create
+      </button>
+    </form>
+  </div>
+  <div class="table"
+       [class.loader]="loader$ | async">
+    <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
+      <ngx-datatable-column name="Name" [flexGrow]="3">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a [routerLink]="[row.name]"
+             class="table__folder">
+            {{ row.name }}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Size" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ ' ' }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Date" [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ ' ' }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <ngx-datatable class="material bootstrap custom-table" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="files">
+      <ngx-datatable-column [flexGrow]="3">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <ng-container *ngIf="row.preview; else rowLink">
+            <img class="content__img"
+                 [src]="row.url"/>
+          </ng-container>
+          <ng-template #rowLink>
+            <a target="_blank" [href]="row.url">{{ row.name }}</a>
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.size }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [flexGrow]="1">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.day + '/' + row.month + '/' + row.year }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
