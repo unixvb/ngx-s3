@@ -42,7 +42,7 @@ export class DownloadComponent implements OnInit, OnDestroy {
       this.downloadService.setSignedInUser(this.signedInUser);
 
       if (!this.signedInUser || !this.signedInUser.signedIn) {
-        this.router.navigate(['signin']);
+        this.router.navigate(['/signin']);
         return;
       }
 

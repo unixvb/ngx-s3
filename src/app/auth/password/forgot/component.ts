@@ -26,7 +26,7 @@ export class ForgotPasswordComponent {
       (err, statusCode) => {
         this.submitted = false;
         if (statusCode === AuthStatusCodeEnum.verificationCodeRequired) {
-          this.router.navigate(['reset-password']);
+          this.router.navigate(['/reset-password']);
         } else if (statusCode === AuthStatusCodeEnum.noSuchUser) {
           this.submissionError = 'Email is not valid.';
         } else if (statusCode === AuthStatusCodeEnum.unknownError) {

@@ -44,7 +44,7 @@ export class ResetPasswordComponent {
       (err, statusCode) => {
         this.submitted = false;
         if (statusCode === AuthStatusCodeEnum.uncompletedSignInData) {
-          this.router.navigate(['forot-password']);
+          this.router.navigate(['/forot-password']);
         } else if (statusCode === AuthStatusCodeEnum.success) {
           this.statusMessage = 'Password change is successful. You will be redirected to signin page within 5 seconds';
           this.statusClass = 'alert-success';

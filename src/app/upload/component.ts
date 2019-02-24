@@ -58,7 +58,7 @@ export class UploadContainerComponent implements OnInit {
       this.uploadService.setSignedInUser(this.signedInUser);
       if (!this.signedInUser || !this.signedInUser.signedIn) {
         // this.authService.redirectToSignin(this.router.routerState.snapshot.root.queryParams);
-        this.router.navigate(['signin']);
+        this.router.navigate(['/signin']);
         return;
       }
     });

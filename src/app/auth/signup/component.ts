@@ -34,7 +34,7 @@ export class SignupComponent implements OnInit {
         if (err) {
           alert(err.message);
         } else if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
-          this.router.navigate(['first-time-password']);
+          this.router.navigate(['/first-time-password']);
         } else if (statusCode === AuthStatusCodeEnum.signedIn) {
           this.router.navigate(['/']);
           return;
