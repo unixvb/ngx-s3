@@ -1,4 +1,4 @@
-import { Component, OnInit, } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -8,14 +8,18 @@ import { AuthService } from '../service';
 @Component({
   selector: 'app-signin',
   templateUrl: './component.html',
-  styleUrls: ['./component.scss']
+  styleUrls: ['./component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SigninComponent implements OnInit {
   public formGroup: FormGroup;
   public submissionError: string;
   public submitted = false;
 
-  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
+  constructor(private authService: AuthService,
+              private router: Router,
+              private fb: FormBuilder,
+              private changeDetector: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -34,9 +38,9 @@ export class SigninComponent implements OnInit {
 
   onFormSubmit() {
     this.submitted = true;
+    this.changeDetector.detectChanges();
     this.authService.signIn(this.formGroup.value,
       (err, statusCode) => {
-        this.submitted = false;
         if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
           this.router.navigate(['/first-time-password']);
         } else if (statusCode === AuthStatusCodeEnum.signedIn) {
@@ -47,6 +51,8 @@ export class SigninComponent implements OnInit {
         } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
         }
+        this.submitted = false;
+        this.changeDetector.detectChanges();
       });
   }
 }
