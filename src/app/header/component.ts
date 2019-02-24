@@ -16,6 +16,10 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.currentStatus$.subscribe(() => this.updateUserData());
+  }
+
+  private updateUserData() {
     this.authService.getCurrentUser((err, signedInUser) => {
       this.signedInUserName = signedInUser.username;
       this.changeDetector.detectChanges();
