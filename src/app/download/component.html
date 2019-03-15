@@ -27,12 +27,9 @@
   <div class="table"
        [class.loader]="loader$ | async">
     <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
-      <ngx-datatable-column name="Name" [flexGrow]="1">
+      <ngx-datatable-column name="Name" [flexGrow]="2">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <a class="table__folder"
-             [routerLink]="[row.name]">
-            {{ row.name }}
-          </a>
+          <a class="table__folder" (click)="selectFolder(row)">{{ row.name }}</a>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Size" [flexGrow]="1">
@@ -48,11 +45,12 @@
     </ngx-datatable>
 
     <ngx-datatable class="material bootstrap custom-table" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="files">
-      <ngx-datatable-column [flexGrow]="1">
+      <ngx-datatable-column [flexGrow]="2">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <ng-container *ngIf="row.preview; else rowLink">
             <img class="content__img"
                  [src]="row.url"/>
+            <a target="_blank" [href]="row.url">{{ row.name }}</a>
           </ng-container>
           <ng-template #rowLink>
             <a target="_blank" [href]="row.url">{{ row.name }}</a>

@@ -1,10 +1,11 @@
 <div class="upload">
   <label class="btn btn-primary file-input-btn">
-    Select files
+    Select files for upload
     <input type="file" hidden name="files[]" multiple="" type="file" (change)="fileChangeEvent($event)">
   </label>
   <button type="button" class="btn btn-success" [disabled]="!files.length" (click)="uploadAll()">Upload all</button>
-  <button type="button" class="btn btn-danger" [disabled]="!files.length" (click)="clearAll()">Clear all</button>
+  <button type="button" class="btn btn-danger" [disabled]="!files.length" (click)="clearAll()">Remove all</button>
+  <h2 class="section-title text-center">Selected Files</h2>
   <div class="files previews">
     <app-file-upload *ngFor="let file of files; let oddRow=odd;"
                      [oddRow]="oddRow"
