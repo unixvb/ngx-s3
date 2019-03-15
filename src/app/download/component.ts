@@ -67,14 +67,11 @@ export class DownloadComponent implements OnInit, OnDestroy {
   }
 
   public onBackButtonClick() {
-    // TODO: fix bug with navigation ['../'] on root route (it breaks router)
-    if (this.router.url.split('/').length === 2) {
-      console.log('/');
-      this.router.navigate(['/']);
-    } else {
-      console.log('../');
-      this.router.navigate(['../'], { relativeTo: this.route });
-    }
+    this.router.navigate([this.router.url.substring(0, this.router.url.lastIndexOf('/'))]);
+  }
+
+  selectFolder(row: S3DirectoryModel) {
+    this.router.navigate([row.name], { relativeTo: this.route });
   }
 
   private fetchData(folder: string = this.router.url) {
