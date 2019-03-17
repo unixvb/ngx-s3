@@ -22,7 +22,8 @@ export class DownLoadService {
   listFiles(folder: string) {
     return S3Factory.getS3(this.region).listObjectsV2({
       Bucket: s3Config.buckets[this.region],
-      Prefix: [this.signedInUser.username, this.signedInUser.userId].join(DIVIDER) + UploadService.reativeFolder(folder),
+      Prefix: UploadService.reativeFolder(folder),
+      // Prefix: [this.signedInUser.username, this.signedInUser.userId].join(DIVIDER) + UploadService.reativeFolder(folder),
       Delimiter: DIVIDER
     }).promise();
   }

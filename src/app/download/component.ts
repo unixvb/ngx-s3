@@ -11,6 +11,9 @@ import { S3ObjectModel } from '../models/s3-object.model';
 import { DownLoadService } from './service';
 import { AuthService, User } from '../auth';
 import { UploadService } from '../upload';
+import { DIVIDER } from '../upload/service';
+import { group } from '@angular/animations';
+import { cpus } from 'os';
 
 @Component({
   selector: 'app-download',
@@ -19,7 +22,7 @@ import { UploadService } from '../upload';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DownloadComponent implements OnInit, OnDestroy {
-  public signedInUser: any;
+  public signedInUser: User;
   public files: S3ObjectModel[] = [];
   public directories: S3DirectoryModel[] = [];
   public loader$ = new BehaviorSubject<boolean>(false);
@@ -76,18 +79,26 @@ export class DownloadComponent implements OnInit, OnDestroy {
 
   private fetchData(folder: string = this.router.url) {
     this.loader$.next(true);
-    this.downloadService.listFiles(folder)
-      .then(response => {
-        this.directories = response.CommonPrefixes.map(data => new S3DirectoryModel(data)).filter(data => data.name);
-        this.files = response.Contents.filter(data => data.Size).map(data => new S3ObjectModel(data, this.downloadService));
-        this.loader$.next(false);
-        this.changeDetector.detectChanges();
-      })
-      .catch(error => {
-        console.log(error);
-        this.loader$.next(false);
-        this.changeDetector.detectChanges();
-      });
+    this.changeDetector.detectChanges();
+    if (folder === DIVIDER) {
+      this.directories = this.signedInUser.groups.map(group => ({ prefix: group, name: group }));
+      this.files = [];
+      this.loader$.next(false);
+      this.changeDetector.detectChanges();
+    } else {
+      this.downloadService.listFiles(folder)
+        .then(response => {
+          this.directories = response.CommonPrefixes.map(data => new S3DirectoryModel(data)).filter(data => data.name);
+          this.files = response.Contents.filter(data => data.Size).map(data => new S3ObjectModel(data, this.downloadService));
+          this.loader$.next(false);
+          this.changeDetector.detectChanges();
+        })
+        .catch(error => {
+          console.log(error);
+          this.loader$.next(false);
+          this.changeDetector.detectChanges();
+        });
+    }
   }
 
   ngOnDestroy(): void {

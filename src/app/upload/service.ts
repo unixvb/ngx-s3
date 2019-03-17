@@ -26,7 +26,7 @@ export class UploadService {
   }
 
   static reativeFolder(folder: string) {
-    return folder === DIVIDER ? DIVIDER : folder + DIVIDER;
+    return folder.substr(1) + DIVIDER;
   }
 
   setSignedInUser(user: User) {
@@ -46,9 +46,9 @@ export class UploadService {
     this.region = region;
   }
 
-  private preparePutObjectRequest(relativeDirective: string, file: File): S3.Types.PutObjectRequest {
+  private preparePutObjectRequest(folder: string, file: File): S3.Types.PutObjectRequest {
     return {
-      Key: this.generateKey(relativeDirective, file.name),
+      Key: this.generateKey(folder, file.name),
       Bucket: s3Config.buckets[this.region],
       Body: file,
       ContentType: file.type
@@ -63,13 +63,13 @@ export class UploadService {
     };
   }
 
-  upload(relativeDirective: string, file: File, progressCallback: (error: Error, progress: number, speed: number) => void) {
+  upload(folder: string, file: File, progressCallback: (error: Error, progress: number, speed: number) => void) {
     if (!this.signedInUser) {
       progressCallback(new Error('User not signed in'), undefined, undefined);
       return;
     }
 
-    const s3Upload = S3Factory.getS3(this.region).upload(this.preparePutObjectRequest(relativeDirective, file));
+    const s3Upload = S3Factory.getS3(this.region).upload(this.preparePutObjectRequest(folder, file));
     s3Upload.on('httpUploadProgress', this.handleS3UploadProgress(progressCallback));
     s3Upload.send(this.handleS3UploadComplete(progressCallback));
     return s3Upload;
@@ -107,12 +107,7 @@ export class UploadService {
     };
   }
 
-  private generateKey(relativeDirective: string, name: string) {
-    return [this.signedInUser.username, this.signedInUser.userId].join(DIVIDER) +
-      UploadService.reativeFolder(relativeDirective) + name;
-  }
-
-  cancel(s3Upload: S3.ManagedUpload) {
-    s3Upload.abort();
+  private generateKey(folder: string, name: string) {
+    return UploadService.reativeFolder(folder) + name;
   }
 }

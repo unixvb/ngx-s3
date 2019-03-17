@@ -154,21 +154,22 @@ export class AuthService {
     this.router.navigate(['/signin']);
   }
 
-  private getCurrentCognitoUser(callback: (err1?: Error, cognitoUser?: CognitoUser) => void) {
+  private getCurrentCognitoUser(callback: (err1?: Error, cognitoUser?: CognitoUser, groups?: string[]) => void) {
     const cognitoUser = this.userPool.getCurrentUser();
     if (cognitoUser) {
       cognitoUser.getSession((err: Error, session: CognitoUserSession) => {
         if (session && session.isValid()) {
+          const groups = session.getIdToken().decodePayload()['cognito:groups'];
           if (!this.cognitoAwsCredentials || this.cognitoAwsCredentials.needsRefresh()) {
             this.updateAWSCredentials(session.getIdToken().getJwtToken(), cognitoUser.getUsername(), (err2) => {
               if (err2) {
                 callback(err2);
               } else {
-                callback(undefined, cognitoUser);
+                callback(undefined, cognitoUser, groups);
               }
             });
           } else {
-            callback(undefined, cognitoUser);
+            callback(undefined, cognitoUser, groups);
           }
         } else {
           callback(undefined, undefined);
@@ -180,10 +181,10 @@ export class AuthService {
   }
 
   getCurrentUser(callback: (err?: Error, user?: User) => void) {
-    this.getCurrentCognitoUser((err, cognitoUser) => {
+    this.getCurrentCognitoUser((err, cognitoUser, groups) => {
       if (cognitoUser && cognitoUser.getUsername()) {
         const identityId = this.cognitoAwsCredentials ? this.cognitoAwsCredentials.identityId : undefined;
-        callback(undefined, new User(true, cognitoUser.getUsername(), identityId));
+        callback(undefined, new User(true, cognitoUser.getUsername(), identityId, groups));
       } else {
         callback(undefined, User.default);
       }

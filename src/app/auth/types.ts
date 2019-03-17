@@ -2,7 +2,10 @@ import { Dictionary } from '../../types';
 
 export class User {
   static default = new User(false);
-  constructor(public signedIn: boolean, public username?: string, public userId?: string) { }
+
+  constructor(public signedIn: boolean, public username?: string, public userId?: string, public groups: string[] = []) {
+    console.log('userId :', userId);
+  }
 }
 
 export interface SignupData {
