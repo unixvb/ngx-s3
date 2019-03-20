@@ -9,8 +9,9 @@ import {
   SignoutComponent,
   SignupComponent
 } from './auth';
-import { HomeComponent } from './home';
-import { HeaderComponent } from './header/component';
+
+import { HeaderComponent } from './core/header/header.component';
+import { MainComponent } from './core/main/main.component';
 
 const routes: Routes = [
   {
@@ -43,7 +44,7 @@ const routes: Routes = [
       },
       {
         path: '**',
-        component: HomeComponent
+        component: MainComponent
       }
     ]
   }

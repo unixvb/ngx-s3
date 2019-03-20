@@ -13,12 +13,12 @@ import {
   SignoutComponent,
   SignupComponent
 } from './auth';
-import { HomeComponent } from './home';
 import { DownloadComponent, DownLoadService } from './download';
 import { LoadingComponent } from './loading/component';
 import { FileUploadComponent, UploadContainerComponent, UploadService } from './upload';
 import { FileSizePipe } from '../utils';
-import { HeaderComponent } from './header/component';
+import { HeaderComponent } from './core/header/header.component';
+import { MainComponent } from './core/main/main.component';
 
 
 @NgModule({
@@ -26,7 +26,7 @@ import { HeaderComponent } from './header/component';
     AppComponent,
     FirstTimePasswordComponent,
     ForgotPasswordComponent,
-    HomeComponent,
+    MainComponent,
     LoadingComponent,
     ResetPasswordComponent,
     SigninComponent,

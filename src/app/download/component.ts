@@ -12,8 +12,6 @@ import { DownLoadService } from './service';
 import { AuthService, User } from '../auth';
 import { UploadService } from '../upload';
 import { DIVIDER } from '../upload/service';
-import { group } from '@angular/animations';
-import { cpus } from 'os';
 
 @Component({
   selector: 'app-download',
