@@ -5,13 +5,12 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { S3ObjectsRefreshService } from '../services/s3-objects-refresh.service';
 import { S3DirectoryModel } from '../models/s3-directory.model';
 import { S3ObjectModel } from '../models/s3-object.model';
-import { DownLoadService } from './service';
 import { AuthService, User } from '../auth';
 import { UploadService } from '../upload';
 import { DIVIDER } from '../upload/service';
+import { S3ObjectsService } from '../services/s3-objects.service';
 
 @Component({
   selector: 'app-download',
@@ -30,9 +29,8 @@ export class DownloadComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private authService: AuthService,
               private uploadService: UploadService,
-              private downloadService: DownLoadService,
+              private s3ObjectsService: S3ObjectsService,
               private formBuilder: FormBuilder,
-              private refreshService: S3ObjectsRefreshService,
               private changeDetector: ChangeDetectorRef) {
   }
 
@@ -41,7 +39,6 @@ export class DownloadComponent implements OnInit, OnDestroy {
     this.authService.getCurrentUser((err, user: User) => {
       this.signedInUser = user;
       this.uploadService.setSignedInUser(this.signedInUser);
-      this.downloadService.setSignedInUser(this.signedInUser);
 
       if (!this.signedInUser || !this.signedInUser.signedIn) {
         this.router.navigate(['/signin']);
@@ -56,7 +53,7 @@ export class DownloadComponent implements OnInit, OnDestroy {
         )
         .subscribe((event: NavigationEnd) => this.fetchData(event.urlAfterRedirects));
     });
-    this.refreshService.changes$.subscribe(() => this.fetchData());
+    this.s3ObjectsService.changes$.subscribe(() => this.fetchData());
   }
 
   public onFormSubmit() {
@@ -84,10 +81,11 @@ export class DownloadComponent implements OnInit, OnDestroy {
       this.loader$.next(false);
       this.changeDetector.detectChanges();
     } else {
-      this.downloadService.listFiles(folder)
+      this.s3ObjectsService.list(folder)
         .then(response => {
           this.directories = response.CommonPrefixes.map(data => new S3DirectoryModel(data)).filter(data => data.name);
-          this.files = response.Contents.filter(data => data.Size).map(data => new S3ObjectModel(data, this.downloadService));
+          this.files = response.Contents.filter(data => data.Size)
+            .map(data => new S3ObjectModel(data, this.s3ObjectsService.getSignedUrl(data.Key)));
           this.loader$.next(false);
           this.changeDetector.detectChanges();
         })

@@ -8,7 +8,7 @@ import { s3Config } from '../../config';
 
 export const DIVIDER = '/';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UploadService {
 
   // Observable string sources

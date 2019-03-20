@@ -3,7 +3,7 @@ import { ContainerEvents, FileObject, FileObjectStatus, } from '../types';
 import { Router } from '@angular/router';
 import { UploadService } from '../service';
 import { Subscription } from 'rxjs';
-import { S3ObjectsRefreshService } from '../../services/s3-objects-refresh.service';
+import { S3ObjectsService } from '../../services/s3-objects.service';
 
 /**
  * Single file upload component.
@@ -25,7 +25,7 @@ export class FileUploadComponent implements OnDestroy {
 
   constructor(private uploadService: UploadService,
               private router: Router,
-              private refreshService: S3ObjectsRefreshService) {
+              private s3ObjectsService: S3ObjectsService) {
     this.containerEventSubscription = uploadService.uploadContrainerEvent$.subscribe(
       containerEvent => this.handleContainerEvent(containerEvent)
     );
@@ -58,7 +58,7 @@ export class FileUploadComponent implements OnDestroy {
         this.speed = speed || this.speed;
         if (this.progress === 100) {
           this.fileObject.status = FileObjectStatus.Uploaded;
-          this.refreshService.changes$.next(true);
+          this.s3ObjectsService.changes$.next(true);
         }
       }
     };

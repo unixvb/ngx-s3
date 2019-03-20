@@ -8,7 +8,7 @@ import { cognitoConfig } from '../../config';
 import { SignupData, User } from './types';
 import { AuthStatusCodeEnum, AuthStatusCodeType } from './models/auth-status-code.enum';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private static userPoolLoginKey = `cognito-idp.${cognitoConfig.userPool.region}.amazonaws.com/${cognitoConfig.userPool.UserPoolId}`;
 

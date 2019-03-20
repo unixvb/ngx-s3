@@ -5,7 +5,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AppComponent } from './app.component';
 import { AppRoutesModule } from './app-routes.module';
 import {
-  AuthService,
   FirstTimePasswordComponent,
   ForgotPasswordComponent,
   ResetPasswordComponent,
@@ -13,12 +12,12 @@ import {
   SignoutComponent,
   SignupComponent
 } from './auth';
-import { DownloadComponent, DownLoadService } from './download';
-import { FileUploadComponent, UploadContainerComponent, UploadService } from './upload';
+import { FileUploadComponent, UploadContainerComponent } from './upload';
 import { FileSizePipe } from '../utils';
 import { HeaderComponent } from './core/header/header.component';
 import { MainComponent } from './core/main/main.component';
 import { LoaderComponent } from './core/loader/loader.component';
+import { DownloadComponent } from './download/component';
 
 
 @NgModule({
@@ -45,11 +44,7 @@ import { LoaderComponent } from './core/loader/loader.component';
     ReactiveFormsModule,
     NgxDatatableModule
   ],
-  providers: [
-    AuthService,
-    DownLoadService,
-    UploadService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

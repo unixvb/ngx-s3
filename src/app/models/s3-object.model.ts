@@ -1,4 +1,3 @@
-import { DownLoadService } from '../download';
 import { FileSizeUtil, MonthUtil } from '../../utils';
 import { DIVIDER } from '../upload/service';
 
@@ -15,9 +14,9 @@ export class S3ObjectModel {
   type: string;
   preview: boolean;
 
-  constructor(data, private downloadService: DownLoadService) {
+  constructor(data, signedUrl: string) {
     this.key = data.Key;
-    this.url = this.downloadService.getUrl(data.Key);
+    this.url = signedUrl;
     this.year = data.LastModified.getUTCFullYear();
     this.month = MonthUtil.getName(data.LastModified.getUTCMonth());
     this.day = data.LastModified.getUTCDate();
