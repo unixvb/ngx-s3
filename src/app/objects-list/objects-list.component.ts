@@ -13,12 +13,12 @@ import { DIVIDER } from '../upload/service';
 import { S3ObjectsService } from '../services/s3-objects.service';
 
 @Component({
-  selector: 'app-download',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss'],
+  selector: 'app-objects-list',
+  templateUrl: './objects-list.component.html',
+  styleUrls: ['./objects-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DownloadComponent implements OnInit, OnDestroy {
+export class ObjectsListComponent implements OnInit, OnDestroy {
   public signedInUser: User;
   public files: S3ObjectModel[] = [];
   public directories: S3DirectoryModel[] = [];

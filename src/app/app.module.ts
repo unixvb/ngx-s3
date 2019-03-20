@@ -17,7 +17,7 @@ import { FileSizePipe } from '../utils';
 import { HeaderComponent } from './core/header/header.component';
 import { MainComponent } from './core/main/main.component';
 import { LoaderComponent } from './core/loader/loader.component';
-import { DownloadComponent } from './download/component';
+import { ObjectsListComponent } from './objects-list/objects-list.component';
 
 
 @NgModule({
@@ -31,7 +31,7 @@ import { DownloadComponent } from './download/component';
     SigninComponent,
     SignupComponent,
     SignoutComponent,
-    DownloadComponent,
+    ObjectsListComponent,
     FileSizePipe,
     FileUploadComponent,
     UploadContainerComponent,
