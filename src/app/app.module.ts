@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { AppComponent } from './app.component';
+import { AppComponent } from './app/app.component';
 import { AppRoutesModule } from './app-routes.module';
 import {
   FirstTimePasswordComponent,

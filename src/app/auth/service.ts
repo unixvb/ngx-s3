@@ -4,9 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool, CognitoUserSession } from 'amazon-cognito-identity-js';
 import { AWSError, CognitoIdentityCredentials, config as AWSConfig } from 'aws-sdk';
 
-import { cognitoConfig } from '../../config';
 import { SignupData, User } from './types';
 import { AuthStatusCodeEnum, AuthStatusCodeType } from './models/auth-status-code.enum';
+import { cognitoConfig } from '../../config/cognito';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -196,7 +196,7 @@ export class AuthService {
     logins[AuthService.userPoolLoginKey] = sessionToken;
     this.cognitoAwsCredentials = new CognitoIdentityCredentials(
       {
-        IdentityPoolId: cognitoConfig.identityPoolId,
+        IdentityPoolId: cognitoConfig.identityPool.id,
         Logins: logins,
         LoginId: username
       },

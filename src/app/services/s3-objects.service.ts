@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { S3 } from 'aws-sdk';
 
 import { S3Factory } from '../../utils';
-import { s3Config } from '../../config';
+import { s3Config } from '../../config/s3';
 
 export const DIVIDER = '/';
 
