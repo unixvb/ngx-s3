@@ -14,8 +14,7 @@ export class UploadFilesWrapperComponent implements OnInit {
   signedInUser: User;
 
   constructor(private authService: AuthService,
-              private router: Router,
-              private uploadService: UploadService) {
+              private router: Router) {
   }
 
   fileChangeEvent(fileInput: any) {
@@ -29,11 +28,11 @@ export class UploadFilesWrapperComponent implements OnInit {
   }
 
   uploadAll() {
-    this.uploadService.publishUploadContainerEvent(ContainerEvents.Upload);
+    // TODO: process upload all click
   }
 
   clearAll() {
-    this.uploadService.publishUploadContainerEvent(ContainerEvents.Delete);
+    // TODO: clear upload all click
   }
 
   ngOnInit() {

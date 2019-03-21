@@ -2,7 +2,6 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { ContainerEvents, FileObject, FileObjectStatus, } from '../types';
 import { Router } from '@angular/router';
 import { UploadService } from '../service';
-import { Subscription } from 'rxjs';
 import { S3ObjectsService } from '../../services/s3-objects.service';
 
 @Component({
@@ -17,17 +16,14 @@ export class UploadFileComponent implements OnDestroy {
   progress = 0;
   speed = 0;
   uploadError: string;
-  containerEventSubscription: Subscription;
   uploadHandle: any;
 
   constructor(private uploadService: UploadService,
               private router: Router,
               private s3ObjectsService: S3ObjectsService) {
-    this.containerEventSubscription = uploadService.uploadContainerEvents$.subscribe(
-      containerEvent => this.handleContainerEvent(containerEvent)
-    );
   }
 
+  // TODO: process upload/clear from parent container
   private handleContainerEvent(containerEvent: ContainerEvents) {
     if (containerEvent === ContainerEvents.Upload) {
       return this.fileObject.status === FileObjectStatus.NotStarted && this.upload();
@@ -68,7 +64,5 @@ export class UploadFileComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    // prevent memory leak when component destroyed
-    this.containerEventSubscription.unsubscribe();
   }
 }

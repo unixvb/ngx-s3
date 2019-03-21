@@ -59,7 +59,7 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.uploadService.createDirectory(this.router.url, this.formGroup.value.name).send(() => this.fetchData());
+    this.uploadService.createFolder(this.router.url, this.formGroup.value.name).send(() => this.fetchData());
   }
 
   public onBackButtonClick() {

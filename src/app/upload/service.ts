@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { ContainerEvents, FileObject } from './types';
 import { S3 } from 'aws-sdk';
 import { S3Factory } from '../../utils';
 import { s3Config } from '../../config';
@@ -9,12 +7,6 @@ export const DIVIDER = '/';
 
 @Injectable({ providedIn: 'root' })
 export class UploadService {
-
-  // Observable string sources
-  private uploadContainerEventSource = new Subject<ContainerEvents>();
-
-  // Observable string streams
-  uploadContainerEvents$ = this.uploadContainerEventSource.asObservable();
   private readonly region: string;
 
   constructor() {
@@ -23,11 +15,6 @@ export class UploadService {
 
   static relativeFolder(folder: string) {
     return folder.substr(1) + DIVIDER;
-  }
-
-  // Upload status updates
-  publishUploadContainerEvent(event: ContainerEvents) {
-    this.uploadContainerEventSource.next(event);
   }
 
   private preparePutObjectRequest(folder: string, file: File): S3.Types.PutObjectRequest {
@@ -39,9 +26,9 @@ export class UploadService {
     };
   }
 
-  private preparePutDirectoryRequest(relativeDirective: string, newDirective: string): S3.Types.PutObjectRequest {
+  private prepareFolderObject(relativePath: string, name: string): S3.Types.PutObjectRequest {
     return {
-      Key: this.generateKey(relativeDirective, newDirective) + DIVIDER,
+      Key: this.generateKey(relativePath, name) + DIVIDER,
       Bucket: s3Config.buckets[this.region],
       Body: ''
     };
@@ -54,8 +41,8 @@ export class UploadService {
     return s3Upload;
   }
 
-  createDirectory(relativeDirective: string, newDirective: string) {
-    return S3Factory.getS3(this.region).upload(this.preparePutDirectoryRequest(relativeDirective, newDirective));
+  createFolder(relativePath: string, name: string) {
+    return S3Factory.getS3(this.region).upload(this.prepareFolderObject(relativePath, name));
   }
 
   private handleS3UploadProgress
