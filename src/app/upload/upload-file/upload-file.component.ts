@@ -23,7 +23,7 @@ export class UploadFileComponent implements OnDestroy {
   constructor(private uploadService: UploadService,
               private router: Router,
               private s3ObjectsService: S3ObjectsService) {
-    this.containerEventSubscription = uploadService.uploadContainerEvent$.subscribe(
+    this.containerEventSubscription = uploadService.uploadContainerEvents$.subscribe(
       containerEvent => this.handleContainerEvent(containerEvent)
     );
   }
@@ -63,8 +63,7 @@ export class UploadFileComponent implements OnDestroy {
 
   clear() {
     if (this.fileObject.status !== FileObjectStatus.Uploading) {
-      this.fileObject.status = FileObjectStatus.Deleted;
-      this.uploadService.publishFileUploadEvent(this.fileObject);
+      // TODO: remove from wrapper list
     }
   }
 

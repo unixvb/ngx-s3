@@ -16,19 +16,6 @@ export class UploadFilesWrapperComponent implements OnInit {
   constructor(private authService: AuthService,
               private router: Router,
               private uploadService: UploadService) {
-    uploadService.fileUploadEvent$.subscribe(
-      fileObject => this.handleFileUploadEvent(fileObject)
-    );
-  }
-
-  private handleFileUploadEvent(fileObject: FileObject) {
-    if (fileObject.status === FileObjectStatus.Deleted) {
-      for (let i = 0; i < this.files.length; i++) {
-        if (this.files[i] === fileObject) {
-          this.files.splice(i, 1);
-        }
-      }
-    }
   }
 
   fileChangeEvent(fileInput: any) {
@@ -58,13 +45,5 @@ export class UploadFilesWrapperComponent implements OnInit {
         return;
       }
     });
-    this.setRegion();
-  }
-
-  setRegion() {
-    const queryParams = this.router.routerState.snapshot.root.queryParams;
-    if (queryParams && queryParams.region) {
-      this.uploadService.setRegion(queryParams.region);
-    }
   }
 }

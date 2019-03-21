@@ -12,15 +12,13 @@ export class UploadService {
 
   // Observable string sources
   private uploadContainerEventSource = new Subject<ContainerEvents>();
-  private fileUploadEventSource = new Subject<FileObject>();
 
   // Observable string streams
-  uploadContainerEvent$ = this.uploadContainerEventSource.asObservable();
-  fileUploadEvent$ = this.fileUploadEventSource.asObservable();
-  private region: string;
+  uploadContainerEvents$ = this.uploadContainerEventSource.asObservable();
+  private readonly region: string;
 
   constructor() {
-    this.region = s3Config.defaultRegion || 'us-west-1';
+    this.region = s3Config.defaultRegion;
   }
 
   static relativeFolder(folder: string) {
@@ -30,14 +28,6 @@ export class UploadService {
   // Upload status updates
   publishUploadContainerEvent(event: ContainerEvents) {
     this.uploadContainerEventSource.next(event);
-  }
-
-  publishFileUploadEvent(file: FileObject) {
-    this.fileUploadEventSource.next(file);
-  }
-
-  setRegion(region: string) {
-    this.region = region;
   }
 
   private preparePutObjectRequest(folder: string, file: File): S3.Types.PutObjectRequest {
