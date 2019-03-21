@@ -1,13 +1,7 @@
-export enum ContainerEvents {
-  Upload,
-  Delete
-}
-
 export enum FileObjectStatus {
   NotStarted,
   Uploading,
   Uploaded,
-  Deleted,
   Failed
 }
 
