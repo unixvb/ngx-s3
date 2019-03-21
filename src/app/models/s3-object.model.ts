@@ -1,5 +1,5 @@
 import { FileSizeUtil, MonthUtil } from '../../utils';
-import { DIVIDER } from '../upload/service';
+import { DIVIDER } from '../services/s3-objects.service';
 
 export class S3ObjectModel {
   static acceptedFileTypes = ['jpeg', 'jpg', 'png'];

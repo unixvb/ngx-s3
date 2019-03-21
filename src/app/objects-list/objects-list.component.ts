@@ -8,8 +8,7 @@ import { filter } from 'rxjs/operators';
 import { S3DirectoryModel } from '../models/s3-directory.model';
 import { S3ObjectModel } from '../models/s3-object.model';
 import { AuthService, User } from '../auth';
-import { DIVIDER, UploadService } from '../upload/service';
-import { S3ObjectsService } from '../services/s3-objects.service';
+import { DIVIDER, S3ObjectsService } from '../services/s3-objects.service';
 
 @Component({
   selector: 'app-objects-list',
@@ -27,7 +26,6 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
   constructor(public router: Router,
               private route: ActivatedRoute,
               private authService: AuthService,
-              private uploadService: UploadService,
               private s3ObjectsService: S3ObjectsService,
               private formBuilder: FormBuilder,
               private changeDetector: ChangeDetectorRef) {
@@ -59,7 +57,7 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.uploadService.createFolder(this.router.url, this.formGroup.value.name).send(() => this.fetchData());
+    this.s3ObjectsService.createFolder(this.router.url, this.formGroup.value.name).send(() => this.fetchData());
   }
 
   public onBackButtonClick() {

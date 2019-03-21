@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { UploadService } from '../service';
-import { S3ObjectsService } from '../../services/s3-objects.service';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Subject } from 'rxjs';
+
+import { S3ObjectsService } from '../../services/s3-objects.service';
 import { FileObjectModel } from '../../models/file-object.model';
 import { FileObjectStatusEnum } from '../../models/enums/file-object-status.enum';
 
@@ -24,13 +25,12 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   @Output()
   public onRemove: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(private uploadService: UploadService,
-              private router: Router,
+  constructor(private router: Router,
               private s3ObjectsService: S3ObjectsService) {
   }
 
   ngOnInit(): void {
-    this.upload$.subscribe(() => this.onUpload());
+    this.upload$.pipe(untilDestroyed(this)).subscribe(() => this.onUpload());
   }
 
   public onUpload() {
@@ -38,7 +38,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
       this.fileObject.status = FileObjectStatusEnum.Uploading;
       this.uploadError = undefined;
       this.progress = 0;
-      this.uploadService.upload(this.router.url, this.fileObject.file, this.handleS3UploadProgress());
+      this.s3ObjectsService.uploadFile(this.router.url, this.fileObject.file, this.handleS3UploadProgress());
     }
   }
 

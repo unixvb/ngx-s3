@@ -3,9 +3,22 @@
     Select files for upload
     <input type="file" hidden name="files[]" multiple="" type="file" (change)="fileChangeEvent($event)">
   </label>
-  <button type="button" class="btn btn-success" [disabled]="!files.length" (click)="onUploadAll()">Upload all</button>
-  <button type="button" class="btn btn-danger" [disabled]="!files.length" (click)="onRemoveAll()">Remove all</button>
-  <h2 class="section-title text-center">Selected Files</h2>
+  <button class="btn btn-success"
+          type="button"
+          [disabled]="!files.length"
+          (click)="onUploadAll()">
+    Upload all
+  </button>
+  <button class="btn btn-danger"
+          type="button"
+          [disabled]="!files.length"
+          (click)="onRemoveAll()">
+    Remove all
+  </button>
+  <h2 *ngIf="files.length"
+      class="section-title text-center upload__title">
+    Selected Files
+  </h2>
   <div class="files previews">
     <app-upload-file *ngFor="let file of files; let i = index, let oddRow = odd;"
                      [class.odd]="oddRow"

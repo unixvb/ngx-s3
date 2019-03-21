@@ -1,6 +1,6 @@
 import { CommonPrefix } from 'aws-sdk/clients/s3';
 
-import { DIVIDER } from '../upload/service';
+import { DIVIDER } from '../services/s3-objects.service';
 
 export class S3DirectoryModel {
   prefix: string;

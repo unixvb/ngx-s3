@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 
-/**
- * Container for security scans.
- */
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
