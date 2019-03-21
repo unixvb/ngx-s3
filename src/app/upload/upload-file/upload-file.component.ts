@@ -5,15 +5,12 @@ import { UploadService } from '../service';
 import { Subscription } from 'rxjs';
 import { S3ObjectsService } from '../../services/s3-objects.service';
 
-/**
- * Single file upload component.
- */
 @Component({
-  selector: 'app-file-upload',
-  templateUrl: 'component.html',
-  styleUrls: ['component.scss'],
+  selector: 'app-upload-file',
+  templateUrl: './upload-file.component.html',
+  styleUrls: ['./upload-file.component.scss'],
 })
-export class FileUploadComponent implements OnDestroy {
+export class UploadFileComponent implements OnDestroy {
   @Input() fileObject: FileObject;
   @Input() oddRow: boolean;
   FileObjectStatus = FileObjectStatus;

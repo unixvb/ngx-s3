@@ -1,24 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UploadService } from './service';
-import { ContainerEvents, FileObject, FileObjectStatus } from './types';
-import { AuthService, User } from '../auth';
+import { ContainerEvents, FileObject, FileObjectStatus } from '../types';
+import { AuthService, User } from '../../auth';
+import { UploadService } from '../service';
 
-/**
- * Contrainer for all uploads.
- */
 @Component({
-  selector: 'app-upload',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss']
+  selector: 'app-upload-files-wrapper.',
+  templateUrl: './upload-files-wrapper.component.html',
+  styleUrls: ['./upload-files-wrapper.component.scss']
 })
-export class UploadContainerComponent implements OnInit {
+export class UploadFilesWrapperComponent implements OnInit {
   files: FileObject[] = [];
   signedInUser: User;
 
   constructor(private authService: AuthService,
-    private router: Router,
-    private uploadService: UploadService) {
+              private router: Router,
+              private uploadService: UploadService) {
     uploadService.fileUploadEvent$.subscribe(
       fileObject => this.handleFileUploadEvent(fileObject)
     );

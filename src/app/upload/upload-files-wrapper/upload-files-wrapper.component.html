@@ -7,9 +7,9 @@
   <button type="button" class="btn btn-danger" [disabled]="!files.length" (click)="clearAll()">Remove all</button>
   <h2 class="section-title text-center">Selected Files</h2>
   <div class="files previews">
-    <app-file-upload *ngFor="let file of files; let oddRow=odd;"
+    <app-upload-file *ngFor="let file of files; let oddRow=odd;"
                      [oddRow]="oddRow"
                      [fileObject]="file">
-    </app-file-upload>
+    </app-upload-file>
   </div>
 </div>

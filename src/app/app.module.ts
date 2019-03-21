@@ -12,12 +12,13 @@ import {
   SignoutComponent,
   SignupComponent
 } from './auth';
-import { FileUploadComponent, UploadContainerComponent } from './upload';
 import { FileSizePipe } from '../utils';
 import { HeaderComponent } from './core/header/header.component';
 import { MainComponent } from './core/main/main.component';
 import { LoaderComponent } from './core/loader/loader.component';
 import { ObjectsListComponent } from './objects-list/objects-list.component';
+import { UploadFileComponent } from './upload/upload-file/upload-file.component';
+import { UploadFilesWrapperComponent } from './upload/upload-files-wrapper/upload-files-wrapper.component';
 
 
 @NgModule({
@@ -33,8 +34,8 @@ import { ObjectsListComponent } from './objects-list/objects-list.component';
     SignoutComponent,
     ObjectsListComponent,
     FileSizePipe,
-    FileUploadComponent,
-    UploadContainerComponent,
+    UploadFileComponent,
+    UploadFilesWrapperComponent,
     HeaderComponent
   ],
   imports: [

@@ -8,8 +8,7 @@ import { filter } from 'rxjs/operators';
 import { S3DirectoryModel } from '../models/s3-directory.model';
 import { S3ObjectModel } from '../models/s3-object.model';
 import { AuthService, User } from '../auth';
-import { UploadService } from '../upload';
-import { DIVIDER } from '../upload/service';
+import { DIVIDER, UploadService } from '../upload/service';
 import { S3ObjectsService } from '../services/s3-objects.service';
 
 @Component({
