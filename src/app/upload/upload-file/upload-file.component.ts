@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FileObject, FileObjectStatus, } from '../types';
 import { Router } from '@angular/router';
 import { UploadService } from '../service';
 import { S3ObjectsService } from '../../services/s3-objects.service';
 import { Subject } from 'rxjs';
+import { FileObjectModel } from '../../models/file-object.model';
+import { FileObjectStatusEnum } from '../../models/enums/file-object-status.enum';
 
 @Component({
   selector: 'app-upload-file',
@@ -12,12 +13,12 @@ import { Subject } from 'rxjs';
 })
 export class UploadFileComponent implements OnInit, OnDestroy {
   @Input()
-  public fileObject: FileObject;
+  public fileObject: FileObjectModel;
   @Input()
   public oddRow: boolean;
   @Input()
   private upload$: Subject<boolean>;
-  FileObjectStatus = FileObjectStatus;
+  FileObjectStatusEnum = FileObjectStatusEnum;
   progress = 0;
   speed = 0;
   uploadError: string;
@@ -36,8 +37,8 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   }
 
   public onUpload() {
-    if (this.fileObject.status === FileObjectStatus.NotStarted) {
-      this.fileObject.status = FileObjectStatus.Uploading;
+    if (this.fileObject.status === FileObjectStatusEnum.NotStarted) {
+      this.fileObject.status = FileObjectStatusEnum.Uploading;
       this.uploadError = undefined;
       this.progress = 0;
       this.uploadHandle = this.uploadService.upload(this.router.url, this.fileObject.file, this.handleS3UploadProgress());
@@ -50,12 +51,12 @@ export class UploadFileComponent implements OnInit, OnDestroy {
         this.progress = 0;
         this.speed = 0;
         this.uploadError = error.message;
-        this.fileObject.status = FileObjectStatus.Failed;
+        this.fileObject.status = FileObjectStatusEnum.Failed;
       } else {
         this.progress = progress || this.progress;
         this.speed = speed || this.speed;
         if (this.progress === 100) {
-          this.fileObject.status = FileObjectStatus.Uploaded;
+          this.fileObject.status = FileObjectStatusEnum.Uploaded;
           this.s3ObjectsService.changes$.next(true);
         }
       }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FileObject, FileObjectStatus } from '../types';
 import { AuthService, User } from '../../auth';
 import { Subject } from 'rxjs';
+import { FileObjectModel } from '../../models/file-object.model';
+import { FileObjectStatusEnum } from '../../models/enums/file-object-status.enum';
 
 @Component({
   selector: 'app-upload-files-wrapper.',
@@ -10,7 +11,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./upload-files-wrapper.component.scss']
 })
 export class UploadFilesWrapperComponent implements OnInit {
-  public files: FileObject[] = [];
+  public files: FileObjectModel[] = [];
   signedInUser: User;
   public uploadAll$ = new Subject<boolean>();
 
@@ -21,7 +22,7 @@ export class UploadFilesWrapperComponent implements OnInit {
   fileChangeEvent(fileInput: any) {
     if (fileInput.target.files && fileInput.target.files.length) {
       for (let i = 0; i < fileInput.target.files.length; i++) {
-        this.files.push(new FileObject(fileInput.target.files[i]));
+        this.files.push(new FileObjectModel(fileInput.target.files[i]));
       }
     }
     fileInput.target.value = null;
@@ -32,11 +33,11 @@ export class UploadFilesWrapperComponent implements OnInit {
   }
 
   onRemoveAll() {
-    this.files = this.files.filter(file => file.status === FileObjectStatus.Uploading);
+    this.files = this.files.filter(file => file.status === FileObjectStatusEnum.Uploading);
   }
 
   onRemove(index: number) {
-    if (this.files[index].status !== FileObjectStatus.Uploading) {
+    if (this.files[index].status !== FileObjectStatusEnum.Uploading) {
       this.files.splice(index, 1);
     }
   }

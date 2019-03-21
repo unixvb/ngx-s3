@@ -1,4 +1,5 @@
 import { CommonPrefix } from 'aws-sdk/clients/s3';
+
 import { DIVIDER } from '../upload/service';
 
 export class S3DirectoryModel {
