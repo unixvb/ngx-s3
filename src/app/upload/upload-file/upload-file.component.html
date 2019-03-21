@@ -1,7 +1,9 @@
-<div [ngClass]="{'file-row': true, row: true, odd: oddRow}">
+<div class="file-row">
   <div class="col-lg-4">
     <p class="name">{{fileObject.file.name}}</p>
-    <p [ngClass]="{'text-primary': fileObject.status === FileObjectStatusEnum.Uploading, 'text-success': fileObject.status === FileObjectStatusEnum.Uploaded, 'text-danger': fileObject.status === FileObjectStatusEnum.Failed}">
+    <p [class.text-primary]="fileObject.status === FileObjectStatusEnum.Uploading"
+       [class.text-success]="fileObject.status === FileObjectStatusEnum.Uploaded"
+       [class.text-danger]="fileObject.status === FileObjectStatusEnum.Failed">
       <strong *ngIf="fileObject.status !== FileObjectStatusEnum.NotStarted"
               [ngClass]="{'error': fileObject.status === FileObjectStatusEnum.Failed}">
         {{FileObjectStatusEnum[fileObject.status]}}
@@ -13,8 +15,13 @@
     <p class="size">{{fileObject.file.size | fileSize}}</p>
     <div class="progress">
       <div
-          [ngClass]="{'progress-bar': true, 'progress-bar-striped': true, 'progress-bar-success': fileObject.status !== FileObjectStatusEnum.Failed, 'progress-bar-danger': fileObject.status === FileObjectStatusEnum.Failed }"
-          role="progressbar" [ngStyle]="{'width': progress + '%'}" aria-valuenow="progress" aria-valuemin="0"
+          class="progress-bar progress-bar-striped"
+          [class.progress-bar-success]="fileObject.status !== FileObjectStatusEnum.Failed"
+          [class.progress-bar-danger]="fileObject.status === FileObjectStatusEnum.Failed"
+          role="progressbar"
+          [ngStyle]="{'width': progress + '%'}"
+          aria-valuenow="progress"
+          aria-valuemin="0"
           aria-valuemax="100">
         <strong *ngIf="progress > 0">{{progress}}%</strong>
       </div>

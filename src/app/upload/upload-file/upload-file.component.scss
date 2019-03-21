@@ -1,15 +1,18 @@
-div.file-row.odd{
-    background: #eee; 
-}
+.file-row {
+  padding: 10px 0;
 
-div.file-row {
-    padding: 10px 0;
-    button {
-        margin-left: 5px;
-    }
+  button {
+    margin-left: 5px;
+  }
 }
 
 .progress {
-    background: none;
-    border: 1px #ccc solid;
+  background: none;
+  border: 1px #ccc solid;
+}
+
+:host-context(.odd) {
+  .file-row {
+    background: #eee;
+  }
 }

@@ -8,7 +8,7 @@
   <h2 class="section-title text-center">Selected Files</h2>
   <div class="files previews">
     <app-upload-file *ngFor="let file of files; let i = index, let oddRow = odd;"
-                     [oddRow]="oddRow"
+                     [class.odd]="oddRow"
                      [fileObject]="file"
                      [upload$]="uploadAll$" (onRemove)="onRemove(i)">
     </app-upload-file>

@@ -15,14 +15,11 @@ export class UploadFileComponent implements OnInit, OnDestroy {
   @Input()
   public fileObject: FileObjectModel;
   @Input()
-  public oddRow: boolean;
-  @Input()
   private upload$: Subject<boolean>;
   FileObjectStatusEnum = FileObjectStatusEnum;
   progress = 0;
   speed = 0;
   uploadError: string;
-  uploadHandle: any;
 
   @Output()
   public onRemove: EventEmitter<void> = new EventEmitter<void>();
@@ -41,7 +38,7 @@ export class UploadFileComponent implements OnInit, OnDestroy {
       this.fileObject.status = FileObjectStatusEnum.Uploading;
       this.uploadError = undefined;
       this.progress = 0;
-      this.uploadHandle = this.uploadService.upload(this.router.url, this.fileObject.file, this.handleS3UploadProgress());
+      this.uploadService.upload(this.router.url, this.fileObject.file, this.handleS3UploadProgress());
     }
   }
 

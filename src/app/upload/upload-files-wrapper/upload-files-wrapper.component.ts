@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService, User } from '../../auth';
+import { Component } from '@angular/core';
 import { Subject } from 'rxjs';
 import { FileObjectModel } from '../../models/file-object.model';
 import { FileObjectStatusEnum } from '../../models/enums/file-object-status.enum';
@@ -10,13 +8,11 @@ import { FileObjectStatusEnum } from '../../models/enums/file-object-status.enum
   templateUrl: './upload-files-wrapper.component.html',
   styleUrls: ['./upload-files-wrapper.component.scss']
 })
-export class UploadFilesWrapperComponent implements OnInit {
+export class UploadFilesWrapperComponent {
   public files: FileObjectModel[] = [];
-  signedInUser: User;
   public uploadAll$ = new Subject<boolean>();
 
-  constructor(private authService: AuthService,
-              private router: Router) {
+  constructor() {
   }
 
   fileChangeEvent(fileInput: any) {
@@ -40,15 +36,5 @@ export class UploadFilesWrapperComponent implements OnInit {
     if (this.files[index].status !== FileObjectStatusEnum.Uploading) {
       this.files.splice(index, 1);
     }
-  }
-
-  ngOnInit() {
-    this.authService.getCurrentUser((err, user: User) => {
-      this.signedInUser = user;
-      if (!this.signedInUser || !this.signedInUser.signedIn) {
-        this.router.navigate(['/signin']);
-        return;
-      }
-    });
   }
 }
