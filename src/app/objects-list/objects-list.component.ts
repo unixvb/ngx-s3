@@ -37,7 +37,6 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
     this.formGroup = this.formBuilder.group({ name: ['', Validators.required] });
     this.authService.getCurrentUser((err, user: User) => {
       this.signedInUser = user;
-      this.uploadService.setSignedInUser(this.signedInUser);
 
       if (!this.signedInUser || !this.signedInUser.signedIn) {
         this.router.navigate(['/signin']);

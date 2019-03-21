@@ -52,7 +52,6 @@ export class UploadFilesWrapperComponent implements OnInit {
   ngOnInit() {
     this.authService.getCurrentUser((err, user: User) => {
       this.signedInUser = user;
-      this.uploadService.setSignedInUser(this.signedInUser);
       if (!this.signedInUser || !this.signedInUser.signedIn) {
         // this.authService.redirectToSignin(this.router.routerState.snapshot.root.queryParams);
         this.router.navigate(['/signin']);

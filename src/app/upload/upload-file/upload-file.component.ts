@@ -23,7 +23,7 @@ export class UploadFileComponent implements OnDestroy {
   constructor(private uploadService: UploadService,
               private router: Router,
               private s3ObjectsService: S3ObjectsService) {
-    this.containerEventSubscription = uploadService.uploadContrainerEvent$.subscribe(
+    this.containerEventSubscription = uploadService.uploadContainerEvent$.subscribe(
       containerEvent => this.handleContainerEvent(containerEvent)
     );
   }

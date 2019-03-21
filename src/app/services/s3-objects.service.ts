@@ -18,7 +18,7 @@ export class S3ObjectsService {
   list(folder: string) {
     return S3Factory.getS3(this.region).listObjectsV2({
       Bucket: s3Config.buckets[this.region],
-      Prefix: UploadService.reativeFolder(folder),
+      Prefix: UploadService.relativeFolder(folder),
       Delimiter: DIVIDER
     }).promise();
   }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { User } from '../auth/types';
 import { ContainerEvents, FileObject } from './types';
 import { S3 } from 'aws-sdk';
 import { S3Factory } from '../../utils';
@@ -16,21 +15,16 @@ export class UploadService {
   private fileUploadEventSource = new Subject<FileObject>();
 
   // Observable string streams
-  uploadContrainerEvent$ = this.uploadContainerEventSource.asObservable();
+  uploadContainerEvent$ = this.uploadContainerEventSource.asObservable();
   fileUploadEvent$ = this.fileUploadEventSource.asObservable();
-  private signedInUser: User;
   private region: string;
 
   constructor() {
     this.region = s3Config.defaultRegion || 'us-west-1';
   }
 
-  static reativeFolder(folder: string) {
+  static relativeFolder(folder: string) {
     return folder.substr(1) + DIVIDER;
-  }
-
-  setSignedInUser(user: User) {
-    this.signedInUser = user;
   }
 
   // Upload status updates
@@ -64,11 +58,6 @@ export class UploadService {
   }
 
   upload(folder: string, file: File, progressCallback: (error: Error, progress: number, speed: number) => void) {
-    if (!this.signedInUser) {
-      progressCallback(new Error('User not signed in'), undefined, undefined);
-      return;
-    }
-
     const s3Upload = S3Factory.getS3(this.region).upload(this.preparePutObjectRequest(folder, file));
     s3Upload.on('httpUploadProgress', this.handleS3UploadProgress(progressCallback));
     s3Upload.send(this.handleS3UploadComplete(progressCallback));
@@ -108,6 +97,6 @@ export class UploadService {
   }
 
   private generateKey(folder: string, name: string) {
-    return UploadService.reativeFolder(folder) + name;
+    return UploadService.relativeFolder(folder) + name;
   }
 }
