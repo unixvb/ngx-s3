@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ContainerEvents, FileObject, FileObjectStatus } from '../types';
+import { FileObject, FileObjectStatus } from '../types';
 import { AuthService, User } from '../../auth';
-import { UploadService } from '../service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-upload-files-wrapper.',
@@ -10,8 +10,9 @@ import { UploadService } from '../service';
   styleUrls: ['./upload-files-wrapper.component.scss']
 })
 export class UploadFilesWrapperComponent implements OnInit {
-  files: FileObject[] = [];
+  public files: FileObject[] = [];
   signedInUser: User;
+  public uploadAll$ = new Subject<boolean>();
 
   constructor(private authService: AuthService,
               private router: Router) {
@@ -20,26 +21,30 @@ export class UploadFilesWrapperComponent implements OnInit {
   fileChangeEvent(fileInput: any) {
     if (fileInput.target.files && fileInput.target.files.length) {
       for (let i = 0; i < fileInput.target.files.length; i++) {
-        const fileObject = new FileObject(fileInput.target.files[i]);
-        this.files.push(fileObject);
+        this.files.push(new FileObject(fileInput.target.files[i]));
       }
     }
     fileInput.target.value = null;
   }
 
-  uploadAll() {
-    // TODO: process upload all click
+  onUploadAll() {
+    this.uploadAll$.next(true);
   }
 
-  clearAll() {
-    // TODO: clear upload all click
+  onRemoveAll() {
+    this.files = this.files.filter(file => file.status === FileObjectStatus.Uploading);
+  }
+
+  onRemove(index: number) {
+    if (this.files[index].status !== FileObjectStatus.Uploading) {
+      this.files.splice(index, 1);
+    }
   }
 
   ngOnInit() {
     this.authService.getCurrentUser((err, user: User) => {
       this.signedInUser = user;
       if (!this.signedInUser || !this.signedInUser.signedIn) {
-        // this.authService.redirectToSignin(this.router.routerState.snapshot.root.queryParams);
         this.router.navigate(['/signin']);
         return;
       }
