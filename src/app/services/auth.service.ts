@@ -4,9 +4,10 @@ import { BehaviorSubject } from 'rxjs';
 import { AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool, CognitoUserSession } from 'amazon-cognito-identity-js';
 import { AWSError, CognitoIdentityCredentials, config as AWSConfig } from 'aws-sdk';
 
-import { SignupData, User } from './types';
-import { AuthStatusCodeEnum, AuthStatusCodeType } from './models/auth-status-code.enum';
 import { cognitoConfig } from '../../config/cognito';
+import { SignupDataInterface } from '../models/interfaces/signup-data.interface';
+import { AuthStatusCodeEnum, AuthStatusCodeType } from '../models/enums/auth-status-code.enum';
+import { UserModel } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
 
   private userPool = new CognitoUserPool(cognitoConfig.userPool);
   private previousAppParams: any;
-  private signupData: SignupData = {};
+  private signupData: SignupDataInterface = {};
 
   constructor(private router: Router) {
   }
@@ -33,7 +34,7 @@ export class AuthService {
     });
   }
 
-  signUp(user: SignupData, callback?: (err: Error, statusCode: string) => void) {
+  signUp(user: SignupDataInterface, callback?: (err: Error, statusCode: string) => void) {
     const authService = this;
 
     this.userPool.signUp(
@@ -48,7 +49,7 @@ export class AuthService {
       });
   }
 
-  signIn(user: SignupData, callback?: (err: Error, statusCode: AuthStatusCodeType) => void) {
+  signIn(user: SignupDataInterface, callback?: (err: Error, statusCode: AuthStatusCodeType) => void) {
     const authService = this;
     const username = user.username || this.signupData.username;
     const password = user.password || this.signupData.password;
@@ -180,13 +181,13 @@ export class AuthService {
     }
   }
 
-  getCurrentUser(callback: (err?: Error, user?: User) => void) {
+  getCurrentUser(callback: (err?: Error, user?: UserModel) => void) {
     this.getCurrentCognitoUser((err, cognitoUser, groups) => {
       if (cognitoUser && cognitoUser.getUsername()) {
         const identityId = this.cognitoAwsCredentials ? this.cognitoAwsCredentials.identityId : undefined;
-        callback(undefined, new User(true, cognitoUser.getUsername(), identityId, groups));
+        callback(undefined, new UserModel(true, cognitoUser.getUsername(), identityId, groups));
       } else {
-        callback(undefined, User.default);
+        callback(undefined, UserModel.default);
       }
     });
   }

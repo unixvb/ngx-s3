@@ -1,25 +1,23 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../service';
-import { SignupForm } from '../../types';
-import { AuthStatusCodeEnum } from '../../models/auth-status-code.enum';
+
+import { AuthService } from '../../../services/auth.service';
+import { SignupFormInterface } from '../../../models/interfaces/signup-form.interface';
+import { AuthStatusCodeEnum } from '../../../models/enums/auth-status-code.enum';
 
 @Component({
-  selector: 'app-password',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss']
+  selector: 'app-first-time',
+  templateUrl: './first-time.component.html',
+  styleUrls: ['./first-time.component.scss']
 })
-export class ResetPasswordComponent {
-
-  verificationCode: string;
+export class FirstTimePasswordComponent {
   newPassword: string;
   confirmPassword: string;
   submissionError: string;
   submitted = false;
-  formErrors: SignupForm = {};
   statusMessage: string;
   statusClass: string;
-  isSuccessful = false;
+  formErrors: SignupFormInterface = {};
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -33,22 +31,26 @@ export class ResetPasswordComponent {
     return isValid;
   }
 
-  resetPassword($event) {
+  updatePassword(event) {
+    // Disable default submission.
+    event.preventDefault();
     if (!this.validateNewPassword()) {
       return;
     }
     this.submitted = true;
-    // Disable default submission.
-    $event.preventDefault();
-    this.authService.confirmPassword(this.verificationCode, this.newPassword,
+    this.formErrors = {};
+    this.authService.signIn({
+      newPassword: this.newPassword
+    },
       (err, statusCode) => {
         this.submitted = false;
-        if (statusCode === AuthStatusCodeEnum.uncompletedSignInData) {
-          this.router.navigate(['/forot-password']);
-        } else if (statusCode === AuthStatusCodeEnum.success) {
+        if (statusCode === AuthStatusCodeEnum.signedIn) {
           this.statusMessage = 'Password change is successful. You will be redirected to signin page within 5 seconds';
           this.statusClass = 'alert-success';
           setTimeout(() => { this.authService.signout(); }, 4000);
+          return;
+        } else if (statusCode === AuthStatusCodeEnum.uncompletedSignInData) {
+          this.router.navigate(['']);
           return;
         } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;

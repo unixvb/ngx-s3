@@ -1,21 +1,25 @@
-import { Component, OnInit, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { AuthStatusCodeEnum } from '../models/auth-status-code.enum';
-import { AuthService } from '../service';
+import { AuthService } from '../../services/auth.service';
+import { AuthStatusCodeEnum } from '../../models/enums/auth-status-code.enum';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss']
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignupComponent implements OnInit {
+export class SigninComponent implements OnInit {
   public formGroup: FormGroup;
   public submissionError: string;
   public submitted = false;
 
-  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
+  constructor(private authService: AuthService,
+              private router: Router,
+              private fb: FormBuilder,
+              private changeDetector: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -34,12 +38,10 @@ export class SignupComponent implements OnInit {
 
   onFormSubmit() {
     this.submitted = true;
-    this.authService.signUp(this.formGroup.value,
+    this.changeDetector.detectChanges();
+    this.authService.signIn(this.formGroup.value,
       (err, statusCode) => {
-        this.submitted = false;
-        if (err) {
-          alert(err.message);
-        } else if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
+        if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
           this.router.navigate(['/first-time-password']);
         } else if (statusCode === AuthStatusCodeEnum.signedIn) {
           this.router.navigate(['/']);
@@ -49,6 +51,8 @@ export class SignupComponent implements OnInit {
         } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
         }
+        this.submitted = false;
+        this.changeDetector.detectChanges();
       });
   }
 }

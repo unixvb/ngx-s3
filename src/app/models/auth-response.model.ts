@@ -1,4 +1,4 @@
-import { AuthStatusCodeType } from './auth-status-code.enum';
+import { AuthStatusCodeType } from './enums/auth-status-code.enum';
 
 export class AuthResponseModel {
   status: AuthStatusCodeType;

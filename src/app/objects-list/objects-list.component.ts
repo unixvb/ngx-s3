@@ -7,8 +7,9 @@ import { filter } from 'rxjs/operators';
 
 import { S3DirectoryModel } from '../models/s3-directory.model';
 import { S3ObjectModel } from '../models/s3-object.model';
-import { AuthService, User } from '../auth';
 import { DIVIDER, S3ObjectsService } from '../services/s3-objects.service';
+import { UserModel } from '../models/user.model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-objects-list',
@@ -17,7 +18,7 @@ import { DIVIDER, S3ObjectsService } from '../services/s3-objects.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectsListComponent implements OnInit, OnDestroy {
-  public signedInUser: User;
+  public signedInUser: UserModel;
   public files: S3ObjectModel[] = [];
   public directories: S3DirectoryModel[] = [];
   public loader$ = new BehaviorSubject<boolean>(false);
@@ -33,7 +34,7 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({ name: ['', Validators.required] });
-    this.authService.getCurrentUser((err, user: User) => {
+    this.authService.getCurrentUser((err, user: UserModel) => {
       this.signedInUser = user;
 
       if (!this.signedInUser || !this.signedInUser.signedIn) {

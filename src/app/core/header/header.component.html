@@ -4,7 +4,7 @@
   <ul class="navbar-nav">
     <ng-container *ngIf="signedInUserName; else elseBlock">
       <li class="nav-item">
-        <a class="btn btn-light" [routerLink]="['/signout']">Sign out</a>
+        <a class="btn btn-light" (click)="onSignOut()" [routerLink]="['/signout']">Sign out</a>
       </li>
     </ng-container>
     <ng-template #elseBlock>

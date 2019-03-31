@@ -1,25 +1,21 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import { AuthStatusCodeEnum } from '../models/auth-status-code.enum';
-import { AuthService } from '../service';
+import { AuthService } from '../../services/auth.service';
+import { AuthStatusCodeEnum } from '../../models/enums/auth-status-code.enum';
 
 @Component({
-  selector: 'app-signin',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
+  styleUrls: ['./sign-up.component.scss']
 })
-export class SigninComponent implements OnInit {
+export class SignupComponent implements OnInit {
   public formGroup: FormGroup;
   public submissionError: string;
   public submitted = false;
 
-  constructor(private authService: AuthService,
-              private router: Router,
-              private fb: FormBuilder,
-              private changeDetector: ChangeDetectorRef) {
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
   }
 
   ngOnInit() {
@@ -38,10 +34,12 @@ export class SigninComponent implements OnInit {
 
   onFormSubmit() {
     this.submitted = true;
-    this.changeDetector.detectChanges();
-    this.authService.signIn(this.formGroup.value,
+    this.authService.signUp(this.formGroup.value,
       (err, statusCode) => {
-        if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
+        this.submitted = false;
+        if (err) {
+          alert(err.message);
+        } else if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {
           this.router.navigate(['/first-time-password']);
         } else if (statusCode === AuthStatusCodeEnum.signedIn) {
           this.router.navigate(['/']);
@@ -51,8 +49,6 @@ export class SigninComponent implements OnInit {
         } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
         }
-        this.submitted = false;
-        this.changeDetector.detectChanges();
       });
   }
 }

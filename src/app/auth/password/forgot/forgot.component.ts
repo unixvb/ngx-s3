@@ -1,20 +1,21 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../service';
-import { SignupForm } from '../../types';
-import { AuthStatusCodeEnum } from '../../models/auth-status-code.enum';
+
+import { SignupFormInterface } from '../../../models/interfaces/signup-form.interface';
+import { AuthService } from '../../../services/auth.service';
+import { AuthStatusCodeEnum } from '../../../models/enums/auth-status-code.enum';
 
 @Component({
-  selector: 'app-password',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss']
+  selector: 'app-forgot-password',
+  templateUrl: './forgot.component.html',
+  styleUrls: ['./forgot.component.scss']
 })
 export class ForgotPasswordComponent {
 
   username: string;
   submissionError: string;
   submitted = false;
-  formErrors: SignupForm = {};
+  formErrors: SignupFormInterface = {};
 
   constructor(private authService: AuthService, private router: Router) { }
 

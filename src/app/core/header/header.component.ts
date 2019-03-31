@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
-import { AuthService } from '../../auth';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -17,6 +17,10 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.authService.currentStatus$.subscribe(() => this.updateUserData());
+  }
+
+  public onSignOut() {
+    this.authService.signout();
   }
 
   private updateUserData() {
