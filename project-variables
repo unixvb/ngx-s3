@@ -1,0 +1,11 @@
+// дописати в файл etc\hosts
+// для зпуска прроекта
+127.0.0.1	ngx-s3.auth.us-east-1.amazoncognito.com
+
+// для запуска взломаного WebStorm
+0.0.0.0 	account.jetbrains.com
+0.0.0.0 	www.jetbrains.com
+
+// для збрки проекта спочатку запустити з командного рядка ng serve
+// для запуска проекта після зборки викликати з браузера:
+// url сайта http://ngx-s3.auth.us-east-1.amazoncognito.com:8001/
