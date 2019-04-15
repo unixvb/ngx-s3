@@ -185,7 +185,15 @@ export class AuthService {
     this.getCurrentCognitoUser((err, cognitoUser, groups) => {
       if (cognitoUser && cognitoUser.getUsername()) {
         const identityId = this.cognitoAwsCredentials ? this.cognitoAwsCredentials.identityId : undefined;
-        callback(undefined, new UserModel(true, cognitoUser.getUsername(), identityId, groups));
+        cognitoUser.getUserAttributes((err, array) => {
+          callback(undefined, new UserModel(
+            true,
+            cognitoUser.getUsername(),
+            identityId.slice(identityId.indexOf(cognitoConfig.userPool.region), identityId.length),
+            groups,
+            array.find(value => value.getName() === 'email').getValue()
+          ));
+        });
       } else {
         callback(undefined, UserModel.default);
       }

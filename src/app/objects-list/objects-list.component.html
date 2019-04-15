@@ -20,53 +20,65 @@
              placeholder="Directory name"
              formControlName="name"/>
       <button class="form__button">
-        Create
+        Create new directory
       </button>
     </form>
   </div>
-  <div class="table"
-       [class.loader]="loader$ | async">
-    <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
-      <ngx-datatable-column name="Name" [flexGrow]="2">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <a class="table__folder" (click)="selectFolder(row)">{{ row.name }}</a>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="Size" [flexGrow]="1">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ ' ' }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="Date" [flexGrow]="1">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ ' ' }}
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
-
-    <ngx-datatable class="material bootstrap custom-table" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="files">
-      <ngx-datatable-column [flexGrow]="2">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <ng-container *ngIf="row.preview; else rowLink">
-            <img class="content__img"
-                 [src]="row.url"/>
-            <a target="_blank" [href]="row.url">{{ row.name }}</a>
-          </ng-container>
-          <ng-template #rowLink>
-            <a target="_blank" [href]="row.url">{{ row.name }}</a>
+  <div *ngIf="{ loader: loader$ | async } as data"
+       class="table"
+       [class.loader]="data.loader">
+    <ng-container *ngIf="directories.length || files.length || data.loader; else noAccess">
+      <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
+        <ngx-datatable-column name="Name" [flexGrow]="2">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="table__folder" (click)="selectFolder(row)">{{ row.name }}</a>
           </ng-template>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column [flexGrow]="1">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.size }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column [flexGrow]="1">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.day + '/' + row.month + '/' + row.year }}
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Size" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ ' ' }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Date" [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ ' ' }}
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+
+      <ngx-datatable class="material bootstrap custom-table" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="files">
+        <ngx-datatable-column [flexGrow]="2">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <ng-container *ngIf="row.preview; else rowLink">
+              <img class="content__img"
+                   [src]="row.url"/>
+              <a target="_blank" [href]="row.url">{{ row.name }}</a>
+            </ng-container>
+            <ng-template #rowLink>
+              <a target="_blank" [href]="row.url">{{ row.name }}</a>
+            </ng-template>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.size }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [flexGrow]="1">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.day + '/' + row.month + '/' + row.year }}
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </ng-container>
+
+    <ng-template #noAccess>
+      <div class="p-3 mb-2 bg-danger text-white">
+        <p>Please contact administrator with this information:</p>
+        <br>
+        <p>{{ '// ' + signedInUser?.email }}</p>
+        <p>{{ signedInUser?.userId }}</p>
+      </div>
+    </ng-template>
   </div>
 </div>
