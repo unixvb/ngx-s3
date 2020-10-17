@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host localhost --port 4200",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -12,16 +12,15 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^7.2.6",
-    "@angular/cli": "^7.3.3",
-    "@angular/common": "^7.2.6",
-    "@angular/compiler": "^7.2.6",
-    "@angular/core": "^7.2.6",
-    "@angular/forms": "^7.2.6",
-    "@angular/http": "^7.2.6",
-    "@angular/platform-browser": "^7.2.6",
-    "@angular/platform-browser-dynamic": "^7.2.6",
-    "@angular/router": "^7.2.6",
+    "@angular/animations": "^8.2.14",
+    "@angular/cli": "^8.3.29",
+    "@angular/common": "^8.2.14",
+    "@angular/compiler": "^8.2.14",
+    "@angular/core": "^8.2.14",
+    "@angular/forms": "^8.2.14",
+    "@angular/platform-browser": "^8.2.14",
+    "@angular/platform-browser-dynamic": "^8.2.14",
+    "@angular/router": "^8.2.14",
     "@swimlane/ngx-datatable": "^14.0.0",
     "amazon-cognito-identity-js": "^3.0.7",
     "aws-sdk": "^2.400.0",
@@ -30,17 +29,17 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "ngx-take-until-destroy": "^5.4.0",
-    "rxjs": "6.4.0",
-    "zone.js": "^0.8.29"
+    "rxjs": "6.6.3",
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.13.3",
-    "@angular/compiler-cli": "^7.2.6",
-    "@angular/language-service": "^7.2.6",
+    "@angular-devkit/build-angular": "~0.803.29",
+    "@angular/compiler-cli": "^8.2.14",
+    "@angular/language-service": "^8.2.14",
     "@types/jasmine": "^3.3.9",
     "@types/jasminewd2": "^2.0.6",
     "@types/node": "^11.9.5",
-    "codelyzer": "^4.5.0",
+    "codelyzer": "^5.0.1",
     "jasmine-core": "~3.3.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^4.0.0",
@@ -51,6 +50,6 @@
     "protractor": "~5.4.2",
     "ts-node": "~8.0.2",
     "tslint": "~5.13.0",
-    "typescript": "3.2.4"
+    "typescript": "3.5.3"
   }
 }
