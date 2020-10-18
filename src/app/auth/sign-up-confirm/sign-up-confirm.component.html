@@ -1,0 +1,41 @@
+<div class="row signin justify-content-center screen-container">
+    <div class="col-lg-4 text-center element-center">
+        <ng-container *ngIf="confirmed; else confirmationForm">
+            <h2 class="form-signin-heading text-capitalize page-title">Success</h2>
+            <label>You have successfully confirm your email</label>
+            <a class="btn btn-link" [routerLink]="['/signin']">Sign in</a>
+        </ng-container>
+
+        <ng-template #confirmationForm>
+            <form #ngForm="ngForm"
+                  novalidate
+                  [formGroup]="formGroup"
+                  (ngSubmit)="onFormSubmit()">
+                <h2 class="form-signin-heading text-capitalize page-title">Confirm you email</h2>
+                <div class="form-group">
+                    <label for="code" class="d-flex">Enter code that was send to your email</label>
+                    <input id="code"
+                           formControlName="code"
+                           class="form-control"
+                           name="code"
+                           required autofocus/>
+                    <div *ngIf="ngForm.submitted && formGroup.controls.code.errors?.required"
+                         class="alert alert-danger">
+                        Code is required
+                    </div>
+                </div>
+                <div *ngIf="submissionError" class="alert alert-danger">
+                    {{ submissionError }}
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary text-capitalize btn-block" type='submit'
+                            [disabled]="submitted && formGroup.valid">
+                        Verify
+                    </button>
+                </div>
+            </form>
+            <app-loader *ngIf="submitted && formGroup.valid"></app-loader>
+        </ng-template>
+    </div>
+</div>

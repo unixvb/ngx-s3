@@ -15,6 +15,7 @@ export class SigninComponent implements OnInit {
   public formGroup: FormGroup;
   public submissionError: string;
   public submitted = false;
+  public isUserNotConfirmed = false;
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -50,6 +51,8 @@ export class SigninComponent implements OnInit {
           this.submissionError = 'Email or password is not valid.';
         } else if (statusCode === AuthStatusCodeEnum.unknownError) {
           this.submissionError = err.message;
+          // @ts-ignore
+          this.isUserNotConfirmed = err.code === 'UserNotConfirmedException';
         }
         this.submitted = false;
         this.changeDetector.detectChanges();

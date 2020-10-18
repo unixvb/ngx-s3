@@ -1,84 +1,106 @@
 <div class="col">
-  <h2 class="section-title text-center">Uploaded Files</h2>
+    <h2 class="section-title text-center">Uploaded Files</h2>
 
-  <p class="table__path">User:/{{router.url}}/</p>
-  <div class="table__footer">
-    <button class="table__back"
-            [disabled]="router.url === '/'"
-            (click)="onBackButtonClick()">
-      Back
-    </button>
+    <p class="table__path">User:/{{router.url}}/</p>
+    <div class="table__footer">
+        <button class="table__back"
+                [disabled]="router.url === '/'"
+                (click)="onBackButtonClick()">
+            Back
+        </button>
 
-    <form #ngForm="ngForm"
-          class="form"
-          novalidate
-          [formGroup]="formGroup"
-          (ngSubmit)="onFormSubmit()">
+        <form #ngForm="ngForm"
+              class="form"
+              novalidate
+              [formGroup]="formGroup"
+              (ngSubmit)="onFormSubmit()">
 
-      <input class="form__input"
-             [class.form__input--error]="ngForm.submitted && formGroup.controls.name.errors"
-             placeholder="Directory name"
-             formControlName="name"/>
-      <button class="form__button">
-        Create new directory
-      </button>
-    </form>
-  </div>
-  <div *ngIf="{ loader: loader$ | async } as data"
-       class="table"
-       [class.loader]="data.loader">
-    <ng-container *ngIf="directories.length || files.length || data.loader; else noAccess">
-      <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
-        <ngx-datatable-column name="Name" [flexGrow]="2">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <a class="table__folder" (click)="selectFolder(row)">{{ row.name }}</a>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Size" [flexGrow]="1">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ ' ' }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Date" [flexGrow]="1">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ ' ' }}
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+            <input class="form__input"
+                   [class.form__input--error]="ngForm.submitted && formGroup.controls.name.errors"
+                   placeholder="Directory name"
+                   formControlName="name"/>
+            <button class="form__button">
+                Create new directory
+            </button>
+        </form>
+    </div>
+    <div *ngIf="{ loader: loader$ | async } as data"
+         class="table"
+         [class.loader]="data.loader">
+        <ng-container *ngIf="directories.length || files.length || data.loader; else emptyList">
+            <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="directories">
+                <ngx-datatable-column name="Name" [flexGrow]="6">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <a class="table__folder" (click)="selectFolder(row)">{{ row.name }}</a>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Size" [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ ' ' }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Date" [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ ' ' }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Delete" [flexGrow]="1">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <button *ngIf="!isRootFolder()" class="table__bin" (click)="onDeleteFileBinClick(row.prefix)"></button>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
 
-      <ngx-datatable class="material bootstrap custom-table" [rowHeight]="'auto'" [columnMode]="'flex'" [rows]="files">
-        <ngx-datatable-column [flexGrow]="2">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <ng-container *ngIf="row.preview; else rowLink">
-              <img class="content__img"
-                   [src]="row.url"/>
-              <a target="_blank" [href]="row.url">{{ row.name }}</a>
+            <ngx-datatable class="material bootstrap custom-table" [rowHeight]="'auto'" [columnMode]="'flex'"
+                           [rows]="files">
+                <ngx-datatable-column [flexGrow]="6">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div class="row">
+                            <div class="content__container">
+                                <ng-container *ngIf="row.preview">
+                                    <img class="content__img"
+                                         [src]="row.url"/>
+                                </ng-container>
+                            </div>
+                            <a class="content__link" target="_blank" [href]="row.url">{{ row.name }}</a>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.size }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.day + '/' + row.month + '/' + row.year }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [flexGrow]="1">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <button class="table__bin" (click)="onDeleteFileBinClick(row.key)"></button>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </ng-container>
+
+        <ng-template #emptyList>
+            <ng-container *ngIf="!isRootFolder(); else noAccess">
+                <div class="p-3 mb-2 bg-info text-white">
+                    <p>Empty folder</p>
+                    <p>Upload files or create a directory</p>
+                </div>
             </ng-container>
-            <ng-template #rowLink>
-              <a target="_blank" [href]="row.url">{{ row.name }}</a>
-            </ng-template>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column [flexGrow]="1">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.size }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column [flexGrow]="1">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.day + '/' + row.month + '/' + row.year }}
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </ng-container>
 
-    <ng-template #noAccess>
-      <div class="p-3 mb-2 bg-danger text-white">
-        <p>Please contact administrator with this information:</p>
-        <br>
-        <p>{{ '// ' + signedInUser?.email }}</p>
-        <p>{{ signedInUser?.userId }}</p>
-      </div>
-    </ng-template>
-  </div>
+            <ng-template #noAccess>
+                <div class="p-3 mb-2 bg-danger text-white">
+                    <p>You don't have access to any folder</p>
+                    <p>Please contact administrator with this information:</p>
+                    <br>
+                    <p>{{ '// ' + signedInUser?.email }}</p>
+                    <p>{{ signedInUser?.userId }}</p>
+                </div>
+            </ng-template>
+        </ng-template>
+    </div>
 </div>

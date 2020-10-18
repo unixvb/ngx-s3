@@ -1,7 +1,7 @@
-<div class="row password justify-content-center">
+<div class="row password justify-content-center screen-container">
   <div class="col-lg-4 element-center">
     <form #passwordFrom="ngForm" (ngSubmit)="forgotPassword($event)" method="post">
-      <h2 class="text-capitalize">Forgot Password?</h2>
+      <h2 class="text-capitalize page-title">Forgot Password?</h2>
       <p>You can reset your password here.</p>
       <div class="form-group">
         <input type="email" id="inputUsername" [(ngModel)]="username" class="form-control" placeholder="Email address" name="username" required>

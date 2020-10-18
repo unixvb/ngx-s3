@@ -17,6 +17,8 @@ import { ForgotPasswordComponent } from './auth/password/forgot/forgot.component
 import { ResetPasswordComponent } from './auth/password/reset/reset.component';
 import { SignupComponent } from './auth/sign-up/sign-up.component';
 import { SigninComponent } from './auth/sign-in/sign-in.component';
+import { SignUpConfirmComponent } from './auth/sign-up-confirm/sign-up-confirm.component';
+import { UserDetailsComponent } from './user-details/user-details.component';
 
 
 @NgModule({
@@ -27,9 +29,11 @@ import { SigninComponent } from './auth/sign-in/sign-in.component';
     ResetPasswordComponent,
     SigninComponent,
     SignupComponent,
+    SignUpConfirmComponent,
     MainComponent,
     LoaderComponent,
     ObjectsListComponent,
+    UserDetailsComponent,
     FileSizePipe,
     UploadFileComponent,
     UploadFilesWrapperComponent,

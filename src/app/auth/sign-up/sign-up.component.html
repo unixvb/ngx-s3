@@ -1,16 +1,15 @@
-<div class="row signin justify-content-center">
+<div class="row signin justify-content-center screen-container">
   <div class="col-lg-4 text-center element-center">
     <form #ngForm="ngForm"
           novalidate
           [formGroup]="formGroup"
           (ngSubmit)="onFormSubmit()">
-      <h2 class="form-signin-heading text-capitalize">Please sign up</h2>
+      <h2 class="form-signin-heading text-capitalize">Sign up</h2>
       <div class="form-group">
-        <label for="inputUsername" class="sr-only">Email address</label>
+        <label for="inputUsername" class="d-flex">Email address</label>
         <input type="email"
                id="inputUsername"
                formControlName="username"
-               placeholder="Email address"
                class="form-control"
                name="username"
                required autofocus/>
@@ -22,16 +21,30 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword" class="sr-only">Password</label>
+        <label for="inputPassword" class="d-flex">Password</label>
         <input type="password"
                id="inputPassword"
                formControlName="password"
-               placeholder="Password"
                class="form-control"
                required
                name="password"/>
         <div *ngIf="ngForm.submitted && formGroup.controls.password.errors?.required" class="alert alert-danger">
           Password is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPasswordConfirmation" class="d-flex">Confirm your password</label>
+        <input type="password"
+               id="inputPasswordConfirmation"
+               formControlName="confirm_password"
+               class="form-control"
+               required
+               name="confirm_password"/>
+        <div *ngIf="ngForm.submitted && formGroup.controls.confirm_password.errors?.required" class="alert alert-danger">
+          Password confirmation is required
+        </div>
+        <div *ngIf="ngForm.submitted && formGroup.controls.confirm_password.errors?.matchValidator" class="alert alert-danger">
+          Password should match
         </div>
       </div>
       <div *ngIf="submissionError" class="alert alert-danger">
@@ -40,11 +53,11 @@
 
       <div class="form-group">
         <button class="btn btn-lg btn-primary text-capitalize btn-block" type='submit'
-                [disabled]="submitted">
+                [disabled]="submitted && formGroup.valid">
           Sign Up
         </button>
       </div>
     </form>
-    <app-loader *ngIf="submitted"></app-loader>
+    <app-loader *ngIf="submitted && formGroup.valid"></app-loader>
   </div>
 </div>

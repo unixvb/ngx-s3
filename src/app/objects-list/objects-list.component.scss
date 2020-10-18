@@ -112,16 +112,38 @@ $grey-light-extra: #f2f2f2;
   }
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 .content {
+  &__container {
+    width: 100px;
+    height: 60px;
+    padding: 0 10px 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   &__img {
     max-width: 100%;
-    max-height: 60px;
-    padding: 0 10px 10px 0;
+    max-height: 100%;
+    background: gainsboro;
+  }
+
+  &__link {
+    flex: 1;
   }
 }
 
 .table {
   $icon-size: 24px;
+  $icon-padding: 4px;
+  $icon-border: 2px;
   $icon-gutter: 10px;
   $default-padding: 15px;
 
@@ -156,6 +178,27 @@ $grey-light-extra: #f2f2f2;
       height: $icon-size;
       width: $icon-size;
       background: url('#{$assets-path}/folder-icon.svg') no-repeat center;
+      background-size: contain;
+    }
+  }
+
+  &__bin {
+    position: relative;
+    height: $icon-size + 2 * $icon-padding + $icon-border;
+    width: $icon-size + 2 * $icon-padding + $icon-border;
+    padding: $icon-padding;
+    border: 2px solid gainsboro;
+    border-radius: 4px;
+    background: transparent;
+
+    &::before {
+      position: absolute;
+      content: '';
+      height: $icon-size;
+      width: $icon-size;
+      top: $icon-padding - 1;
+      left: $icon-padding - 1;
+      background: url('#{$assets-path}/bin.svg') no-repeat center;
       background-size: contain;
     }
   }

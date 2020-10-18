@@ -8,6 +8,8 @@ import { ForgotPasswordComponent } from './auth/password/forgot/forgot.component
 import { ResetPasswordComponent } from './auth/password/reset/reset.component';
 import { SigninComponent } from './auth/sign-in/sign-in.component';
 import { SignupComponent } from './auth/sign-up/sign-up.component';
+import {SignUpConfirmComponent} from './auth/sign-up-confirm/sign-up-confirm.component';
+import {UserDetailsComponent} from './user-details/user-details.component';
 
 const routes: Routes = [
   {
@@ -33,6 +35,14 @@ const routes: Routes = [
       {
         path: 'signup',
         component: SignupComponent
+      },
+      {
+        path: 'signup-confirm',
+        component: SignUpConfirmComponent
+      },
+      {
+        path: 'user-details',
+        component: UserDetailsComponent
       },
       {
         path: '**',
