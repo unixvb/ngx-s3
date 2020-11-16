@@ -1,0 +1,31 @@
+<div class="col">
+    <div class="row">
+        <div class="col-12">
+            <div class="col">
+                <h2 class="section-title text-center">System analysis</h2>
+                <ng-container *ngIf="isDataLoaded">
+                    <br>
+                    <canvas baseChart
+                            [chartType]="'pie'"
+                            [data]="pieChartValues"
+                            [labels]="pieChartLabels">
+                    </canvas>
+
+                    <br>
+                    <canvas baseChart
+                            [chartType]="'bar'"
+                            [datasets]="chartDataSets"
+                            [labels]="monthsNames">
+                    </canvas>
+
+                    <br>
+                    <canvas baseChart
+                            [chartType]="'line'"
+                            [datasets]="chartDataSets"
+                            [labels]="monthsNames">
+                    </canvas>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

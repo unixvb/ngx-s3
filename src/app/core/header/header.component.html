@@ -4,12 +4,18 @@
     <ul class="navbar-nav">
         <ng-container *ngIf="signedInUserName; else elseBlock">
             <li class="nav-item">
-                <ng-container *ngIf="isUserDetailsScreen; else userDetailsButton">
+                <ng-container *ngIf="!isSearchScreen">
+                    <a class="btn btn-link" [routerLink]="['/search']">Search files</a>
+                </ng-container>
+                <ng-container *ngIf="!isAnalysisScreen">
+                    <a class="btn btn-link" [routerLink]="['/system-analysis']">System analysis</a>
+                </ng-container>
+                <ng-container *ngIf="!isUserDetailsScreen">
+                    <a class="btn btn-link" [routerLink]="['/user-details']">User details</a>
+                </ng-container>
+                <ng-container *ngIf="isSearchScreen || isUserDetailsScreen || isAnalysisScreen">
                     <a class="btn btn-link" [routerLink]="['/']">Upload files</a>
                 </ng-container>
-                <ng-template #userDetailsButton>
-                    <a class="btn btn-link" [routerLink]="['/user-details']">User details</a>
-                </ng-template>
                 <a class="btn btn-light" (click)="onSignOut()" [routerLink]="['/signout']">Sign out</a>
             </li>
         </ng-container>

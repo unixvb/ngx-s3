@@ -67,7 +67,7 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
     }
 
     public onBackButtonClick() {
-        this.router.navigate([this.router.url.substring(0, this.router.url.lastIndexOf('/'))]);
+        this.router.navigate([decodeURIComponent(this.router.url.substring(0, this.router.url.lastIndexOf('/')))]);
     }
 
     public onDeleteFileBinClick(Key: string) {
@@ -104,6 +104,10 @@ export class ObjectsListComponent implements OnInit, OnDestroy {
                     this.changeDetector.detectChanges();
                 });
         }
+    }
+
+    public getPath() {
+        return `User:/${decodeURIComponent(this.router.url)}/`;
     }
 
     ngOnDestroy(): void {

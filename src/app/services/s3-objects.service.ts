@@ -5,13 +5,14 @@ import {S3} from 'aws-sdk';
 import {S3Factory} from '../../utils';
 import {s3Config} from '../../config/s3';
 import {AWSError} from 'aws-sdk/lib/error';
+import {CsService} from './cs.service';
 
 export const DIVIDER = '/';
 
 @Injectable({providedIn: 'root'})
 export class S3ObjectsService {
 
-    constructor() {
+    constructor(private csService: CsService) {
         this.region = s3Config.defaultRegion;
     }
 
@@ -24,27 +25,34 @@ export class S3ObjectsService {
         return folder.substr(1) + DIVIDER;
     }
 
-    private static generateKey(folder: string, name: string) {
+    public static generateKey(folder: string, name: string) {
         return S3ObjectsService.relativeFolder(folder) + name;
     }
 
     public list(folder: string) {
         return S3Factory.getS3(this.region).listObjectsV2({
             Bucket: s3Config.buckets[this.region],
-            Prefix: S3ObjectsService.relativeFolder(folder),
+            Prefix: decodeURIComponent(S3ObjectsService.relativeFolder(folder)),
             Delimiter: DIVIDER
         }).promise();
     }
 
-    public uploadFile(folder: string, file: File, progressCallback: (error: Error, progress: number, speed: number) => void) {
+    public uploadFile(
+        folder: string,
+        file: File,
+        authorEmail: string,
+        progressCallback: (error: Error, progress: number, speed: number) => void
+    ) {
         const s3Upload = S3Factory.getS3(this.region).upload({
             Key: S3ObjectsService.generateKey(folder, file.name),
             Bucket: s3Config.buckets[this.region],
             Body: file,
             ContentType: file.type
         });
+
         s3Upload.on('httpUploadProgress', this.handleS3UploadProgress(progressCallback));
-        s3Upload.send(this.handleS3UploadComplete(progressCallback));
+        s3Upload.send(this.handleS3UploadComplete(file, folder, authorEmail, progressCallback));
+
         return s3Upload;
     }
 
@@ -52,14 +60,17 @@ export class S3ObjectsService {
         return S3Factory.getS3(this.region).deleteObject({
             Key,
             Bucket: s3Config.buckets[this.region],
-        }, () => {
-            this.changes$.next(true);
+        }, (err, data) => {
+            if (!err) {
+                this.csService.deleteFromIndex(Key);
+                this.changes$.next(true);
+            }
         });
     }
 
     public createFolder(relativePath: string, name: string) {
         return S3Factory.getS3(this.region).upload({
-            Key: S3ObjectsService.generateKey(relativePath, name) + DIVIDER,
+            Key: decodeURIComponent(S3ObjectsService.generateKey(relativePath, name) + DIVIDER),
             Bucket: s3Config.buckets[this.region],
             Body: ''
         });
@@ -90,12 +101,13 @@ export class S3ObjectsService {
         };
     }
 
-    private handleS3UploadComplete(
-        progressCallback: (error: Error, progress: number, speed: number) => void) {
+    private handleS3UploadComplete(file: File, fileFolder: string, authorEmail: string,
+                                   progressCallback: (error: Error, progress: number, speed: number) => void) {
         return (error: Error, data: S3.ManagedUpload.SendData) => {
             if (error) {
                 progressCallback(error, undefined, undefined);
             } else {
+                this.csService.addToIndex(file, fileFolder, authorEmail);
                 progressCallback(error, 100, undefined);
             }
         };

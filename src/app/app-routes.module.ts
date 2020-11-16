@@ -10,6 +10,8 @@ import { SigninComponent } from './auth/sign-in/sign-in.component';
 import { SignupComponent } from './auth/sign-up/sign-up.component';
 import {SignUpConfirmComponent} from './auth/sign-up-confirm/sign-up-confirm.component';
 import {UserDetailsComponent} from './user-details/user-details.component';
+import {FilesSearchComponent} from './files-search/files-search.component';
+import {SystemAnalysisComponent} from './system-analysis/system-analysis.component';
 
 const routes: Routes = [
   {
@@ -43,6 +45,14 @@ const routes: Routes = [
       {
         path: 'user-details',
         component: UserDetailsComponent
+      },
+      {
+        path: 'search',
+        component: FilesSearchComponent
+      },
+      {
+        path: 'system-analysis',
+        component: SystemAnalysisComponent
       },
       {
         path: '**',

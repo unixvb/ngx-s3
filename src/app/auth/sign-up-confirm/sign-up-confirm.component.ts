@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {Router} from '@angular/router';
@@ -9,7 +9,7 @@ import {AuthService} from '../../services/auth.service';
     selector: 'app-sign-up-confirm',
     templateUrl: './sign-up-confirm.component.html'
 })
-export class SignUpConfirmComponent implements OnInit {
+export class SignUpConfirmComponent implements OnInit, OnDestroy {
     public formGroup: FormGroup;
     public submissionError: string;
     public submitted = false;
@@ -43,5 +43,8 @@ export class SignUpConfirmComponent implements OnInit {
                 }
             });
         }
+    }
+
+    ngOnDestroy(): void {
     }
 }

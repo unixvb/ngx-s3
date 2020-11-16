@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ChartsModule } from 'ng2-charts';
 
 import { AppComponent } from './app/app.component';
 import { AppRoutesModule } from './app-routes.module';
@@ -19,6 +20,8 @@ import { SignupComponent } from './auth/sign-up/sign-up.component';
 import { SigninComponent } from './auth/sign-in/sign-in.component';
 import { SignUpConfirmComponent } from './auth/sign-up-confirm/sign-up-confirm.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { FilesSearchComponent } from './files-search/files-search.component';
+import { SystemAnalysisComponent } from './system-analysis/system-analysis.component';
 
 
 @NgModule({
@@ -37,14 +40,17 @@ import { UserDetailsComponent } from './user-details/user-details.component';
     FileSizePipe,
     UploadFileComponent,
     UploadFilesWrapperComponent,
-    HeaderComponent
+    HeaderComponent,
+    FilesSearchComponent,
+    SystemAnalysisComponent
   ],
   imports: [
     AppRoutesModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

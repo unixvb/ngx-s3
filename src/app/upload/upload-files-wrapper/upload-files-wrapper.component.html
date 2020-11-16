@@ -23,6 +23,7 @@
     <app-upload-file *ngFor="let file of files; let i = index, let oddRow = odd;"
                      [class.odd]="oddRow"
                      [fileObject]="file"
+                     [authorEmail]="signedInUser.email"
                      [upload$]="uploadAll$" (onRemove)="onRemove(i)">
     </app-upload-file>
   </div>

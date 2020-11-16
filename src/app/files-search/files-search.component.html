@@ -1,0 +1,65 @@
+<div class="col">
+    <div class="row">
+        <div class="col-12">
+            <div class="col">
+                <h2 class="section-title text-center">Search Files</h2>
+
+                <form #ngForm="ngForm"
+                      class="form"
+                      novalidate
+                      [formGroup]="formGroup"
+                      (ngSubmit)="onFormSubmit()">
+
+                    <input class="form__input"
+                           [class.form__input--error]="ngForm.submitted && formGroup.controls.query.errors"
+                           placeholder="Search criteria"
+                           formControlName="query"/>
+                    <select class="form__input"
+                            [class.form__input--error]="ngForm.submitted && formGroup.controls.field.errors"
+                            formControlName="field">
+                        <option *ngFor="let fieldKeys of CsIndexFieldsKeys"
+                                [ngValue]="fieldKeys">{{getFieldName(fieldKeys)}}</option>
+                    </select>
+                    <button class="form__button">
+                        Search
+                    </button>
+                </form>
+
+                <br>
+
+                <div class="table">
+                    <ngx-datatable class="material bootstrap" [rowHeight]="'auto'" [columnMode]="'flex'"
+                                   [rows]="files">
+                        <ngx-datatable-column name="Folder" [flexGrow]="3">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a class="table__folder" (click)="navigateToFolder(row.file_folder[0])">
+                                    {{ row.file_folder }}
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="File name" [flexGrow]="3">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.file_name }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Author" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.author_email }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Type" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.file_type }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Date" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ getReadableDate(row.created_at_iso_string[0]) }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

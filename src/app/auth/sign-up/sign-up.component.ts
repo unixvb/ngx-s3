@@ -46,7 +46,6 @@ export class SignupComponent implements OnInit {
             this.authService.signUp(this.formGroup.value,
                 (err, statusCode) => {
                     this.submitted = false;
-                    console.log(statusCode);
                     if (err) {
                         alert(err.message);
                     } else if (statusCode === AuthStatusCodeEnum.newPasswordRequired) {

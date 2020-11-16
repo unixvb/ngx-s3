@@ -1,7 +1,7 @@
 <div class="col">
     <h2 class="section-title text-center">Uploaded Files</h2>
 
-    <p class="table__path">User:/{{router.url}}/</p>
+    <p class="table__path">{{getPath()}}</p>
     <div class="table__footer">
         <button class="table__back"
                 [disabled]="router.url === '/'"

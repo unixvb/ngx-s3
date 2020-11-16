@@ -14,23 +14,33 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 export class HeaderComponent implements OnInit, OnDestroy {
     signedInUserName: string;
     isUserDetailsScreen = false;
+    isSearchScreen = false;
+    isAnalysisScreen = false;
 
     constructor(private router: Router,
                 private authService: AuthService,
                 private changeDetector: ChangeDetectorRef) {
     }
 
+    private updateHeaderInfo(activeRoute: string) {
+        this.isUserDetailsScreen = activeRoute === '/user-details';
+        this.isSearchScreen = activeRoute === '/search';
+        this.isAnalysisScreen = activeRoute === '/system-analysis';
+        this.changeDetector.detectChanges();
+    }
+
     ngOnInit() {
         this.authService.currentStatus$.pipe(untilDestroyed(this)).subscribe(() => this.updateUserData());
 
-        this.isUserDetailsScreen = this.router.url === '/user-details';
+        this.updateHeaderInfo(this.router.url);
+
         this.router.events
             .pipe(
                 filter(e => e instanceof NavigationEnd),
                 untilDestroyed(this)
             )
             .subscribe((event: NavigationEnd) => {
-                this.isUserDetailsScreen = event.urlAfterRedirects === '/user-details';
+                this.updateHeaderInfo(event.urlAfterRedirects);
             });
     }
 

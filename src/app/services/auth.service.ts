@@ -157,12 +157,10 @@ export class AuthService {
     }
 
     signout() {
-        const currentUser = this.userPool.getCurrentUser();
-        if (currentUser) {
-            currentUser.signOut();
-        }
+        this.userPool.getCurrentUser()?.signOut();
         this.currentStatus$.next(AuthStatusCodeEnum.signedOut);
         this.router.navigate(['/signin']);
+        location.reload();
     }
 
     private getCurrentCognitoUser(callback: (err1?: Error, cognitoUser?: CognitoUser, groups?: string[]) => void) {
