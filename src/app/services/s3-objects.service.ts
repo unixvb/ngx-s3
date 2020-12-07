@@ -4,7 +4,6 @@ import {S3} from 'aws-sdk';
 
 import {S3Factory} from '../../utils';
 import {s3Config} from '../../config/s3';
-import {AWSError} from 'aws-sdk/lib/error';
 import {CsService} from './cs.service';
 
 export const DIVIDER = '/';
@@ -41,6 +40,7 @@ export class S3ObjectsService {
         folder: string,
         file: File,
         authorEmail: string,
+        tags: string[],
         progressCallback: (error: Error, progress: number, speed: number) => void
     ) {
         const s3Upload = S3Factory.getS3(this.region).upload({
@@ -51,7 +51,7 @@ export class S3ObjectsService {
         });
 
         s3Upload.on('httpUploadProgress', this.handleS3UploadProgress(progressCallback));
-        s3Upload.send(this.handleS3UploadComplete(file, folder, authorEmail, progressCallback));
+        s3Upload.send(this.handleS3UploadComplete(file, folder, authorEmail, tags, progressCallback));
 
         return s3Upload;
     }
@@ -101,13 +101,13 @@ export class S3ObjectsService {
         };
     }
 
-    private handleS3UploadComplete(file: File, fileFolder: string, authorEmail: string,
+    private handleS3UploadComplete(file: File, fileFolder: string, authorEmail: string, tags: string[],
                                    progressCallback: (error: Error, progress: number, speed: number) => void) {
         return (error: Error, data: S3.ManagedUpload.SendData) => {
             if (error) {
                 progressCallback(error, undefined, undefined);
             } else {
-                this.csService.addToIndex(file, fileFolder, authorEmail);
+                this.csService.addToIndex(file, fileFolder, authorEmail, tags);
                 progressCallback(error, 100, undefined);
             }
         };

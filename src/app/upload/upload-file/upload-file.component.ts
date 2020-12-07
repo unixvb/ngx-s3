@@ -6,6 +6,7 @@ import {Subject} from 'rxjs';
 import {S3ObjectsService} from '../../services/s3-objects.service';
 import {FileObjectModel} from '../../models/file-object.model';
 import {FileObjectStatusEnum} from '../../models/enums/file-object-status.enum';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-upload-file',
@@ -23,25 +24,50 @@ export class UploadFileComponent implements OnInit, OnDestroy {
     progress = 0;
     speed = 0;
     uploadError: string;
+    tagsForm: FormGroup;
+    tagsArray: string[] = [];
+    isSubmitted = false;
 
     @Output()
     public onRemove: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private router: Router,
-                private s3ObjectsService: S3ObjectsService) {
+                private s3ObjectsService: S3ObjectsService,
+                private fb: FormBuilder) {
     }
 
     ngOnInit(): void {
+        this.tagsForm = this.fb.group({
+            inputControl: new FormControl('', Validators.required)
+        });
         this.upload$.pipe(untilDestroyed(this)).subscribe(() => this.onUpload());
     }
 
+    public onAddTag(): void {
+        let text = this.tagsForm.controls.inputControl.value;
+        text = text.trim();
+
+        if (text && text !== '') {
+            this.tagsArray.push(text);
+            this.tagsForm.controls.inputControl.reset();
+        }
+    }
+
+    public onRemoveTag(tag): void {
+        this.tagsArray.splice(this.tagsArray.indexOf(tag), 1);
+    }
+
     public onUpload() {
-        if (this.fileObject.status === FileObjectStatusEnum.NotStarted) {
+        this.isSubmitted = true;
+
+        if (this.tagsArray.length !== 0 &&
+            this.fileObject.status === FileObjectStatusEnum.NotStarted) {
             this.fileObject.status = FileObjectStatusEnum.Uploading;
             this.uploadError = undefined;
             this.progress = 0;
+
             this.s3ObjectsService.uploadFile(
-                decodeURIComponent(this.router.url), this.fileObject.file, this.authorEmail, this.handleS3UploadProgress()
+                decodeURIComponent(this.router.url), this.fileObject.file, this.authorEmail, this.tagsArray, this.handleS3UploadProgress()
             );
         }
     }

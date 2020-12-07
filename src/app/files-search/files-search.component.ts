@@ -47,7 +47,8 @@ export class FilesSearchComponent implements OnInit {
         [CsIndexField.author_email]: 'Author Email',
         [CsIndexField.file_folder]: 'Folder',
         [CsIndexField.file_name]: 'File Name',
-        [CsIndexField.file_type]: 'File Type'
+        [CsIndexField.file_type]: 'File Type',
+        [CsIndexField.file_tags]: 'File Tags'
     }[field]);
 
     public getReadableDate = (isoString: string) => {

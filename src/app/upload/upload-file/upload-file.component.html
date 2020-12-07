@@ -1,45 +1,67 @@
 <div class="file-row row">
-  <div class="col-lg-4">
-    <p class="name">{{fileObject.file.name}}</p>
-    <p [class.text-primary]="fileObject.status === FileObjectStatusEnum.Uploading"
-       [class.text-success]="fileObject.status === FileObjectStatusEnum.Uploaded"
-       [class.text-danger]="fileObject.status === FileObjectStatusEnum.Failed">
-      <strong *ngIf="fileObject.status !== FileObjectStatusEnum.NotStarted"
-              [ngClass]="{'error': fileObject.status === FileObjectStatusEnum.Failed}">
-        {{FileObjectStatusEnum[fileObject.status]}}
-      </strong>
-    </p>
-    <strong class="error text-danger">{{uploadError}}</strong>
-  </div>
-  <div class="col-lg-4 text-right">
-    <p class="size">{{fileObject.file.size | fileSize}}</p>
-    <div class="progress">
-      <div
-          class="progress-bar progress-bar-striped"
-          [class.progress-bar-success]="fileObject.status !== FileObjectStatusEnum.Failed"
-          [class.progress-bar-danger]="fileObject.status === FileObjectStatusEnum.Failed"
-          role="progressbar"
-          [ngStyle]="{'width': progress + '%'}"
-          aria-valuenow="progress"
-          aria-valuemin="0"
-          aria-valuemax="100">
-        <strong *ngIf="progress > 0">{{progress}}%</strong>
-      </div>
+    <div class="col-lg-4">
+        <p class="name">{{fileObject.file.name}}</p>
+        <p [class.text-primary]="fileObject.status === FileObjectStatusEnum.Uploading"
+           [class.text-success]="fileObject.status === FileObjectStatusEnum.Uploaded"
+           [class.text-danger]="fileObject.status === FileObjectStatusEnum.Failed">
+            <strong *ngIf="fileObject.status !== FileObjectStatusEnum.NotStarted"
+                    [ngClass]="{'error': fileObject.status === FileObjectStatusEnum.Failed}">
+                {{FileObjectStatusEnum[fileObject.status]}}
+            </strong>
+        </p>
+        <strong class="error text-danger">{{uploadError}}</strong>
     </div>
-    <p *ngIf="fileObject.status === FileObjectStatusEnum.Uploading" class="speed">{{speed | fileSize}}/s</p>
-  </div>
-  <div class="col-lg-4 text-right">
-    <button class="btn btn-success start"
-            [disabled]="fileObject.status === FileObjectStatusEnum.Uploading"
-            (click)="onUpload()">
-      <i class="glyphicon glyphicon-upload"></i>
-      <strong>Upload</strong>
-    </button>
-    <button class="btn btn-danger delete"
-            [disabled]="fileObject.status === FileObjectStatusEnum.Uploading"
-            (click)="onRemove.emit()">
-      <i class="glyphicon glyphicon-trash"></i>
-      <strong>Remove from list</strong>
-    </button>
-  </div>
+    <div class="col-lg-4 text-right">
+        <p class="size">{{fileObject.file.size | fileSize}}</p>
+        <div class="progress">
+            <div
+                    class="progress-bar progress-bar-striped"
+                    [class.progress-bar-success]="fileObject.status !== FileObjectStatusEnum.Failed"
+                    [class.progress-bar-danger]="fileObject.status === FileObjectStatusEnum.Failed"
+                    role="progressbar"
+                    [ngStyle]="{'width': progress + '%'}"
+                    aria-valuenow="progress"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                <strong *ngIf="progress > 0">{{progress}}%</strong>
+            </div>
+        </div>
+        <p *ngIf="fileObject.status === FileObjectStatusEnum.Uploading" class="speed">{{speed | fileSize}}/s</p>
+    </div>
+    <div class="col-lg-4 text-right">
+        <button class="btn btn-success start"
+                [disabled]="fileObject.status === FileObjectStatusEnum.Uploading"
+                (click)="onUpload()">
+            <i class="glyphicon glyphicon-upload"></i>
+            <strong>Upload</strong>
+        </button>
+        <button class="btn btn-danger delete"
+                [disabled]="fileObject.status === FileObjectStatusEnum.Uploading"
+                (click)="onRemove.emit()">
+            <i class="glyphicon glyphicon-trash"></i>
+            <strong>Remove from list</strong>
+        </button>
+    </div>
+</div>
+<div class="row file-row">
+    <form [formGroup]="tagsForm" (ngSubmit)="onAddTag()">
+        <div fd-form-item>
+            <fd-tokenizer [compact]="true">
+                <fd-token *ngFor="let tag of tagsArray"
+                          [compact]="true"
+                          [readOnly]="false"
+                          (onCloseClick)="onRemoveTag(tag)">
+                    {{ tag }}
+                </fd-token>
+                <input formControlName="inputControl"
+                       class="form-control"
+                       fd-tokenizer-input
+                       fd-form-control
+                       placeholder="Enter file tags"/>
+            </fd-tokenizer>
+        </div>
+    </form>
+    <div *ngIf="isSubmitted && tagsArray.length === 0" class="alert alert-danger">
+        Empty tags list
+    </div>
 </div>

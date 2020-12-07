@@ -28,7 +28,7 @@ const getPullParams = (FunctionName: string, payload: object) => ({
 @Injectable({providedIn: 'root'})
 export class CsService {
 
-    addToIndex(file: File, file_folder: string, author_email: string) {
+    addToIndex(file: File, file_folder: string, author_email: string, file_tags: string[]) {
         const lambda = new Lambda({region: csConfig.ServiceRegion, apiVersion: '2015-03-31'});
 
         lambda.invoke(getPullParams('docIndexer', [{
@@ -37,6 +37,7 @@ export class CsService {
             fields: {
                 author_email,
                 file_folder,
+                file_tags,
                 file_name: file.name,
                 file_size: file.size,
                 file_type: file.type,
